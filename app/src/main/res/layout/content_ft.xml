@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v4.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/colorAppBackground"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior"
+    tools:context=".FtActivity"
+    tools:showIn="@layout/activity_ft">
+
+    <android.support.constraint.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <android.support.constraint.Guideline
+            android:id="@+id/ftGuideline"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintGuide_begin="36dp" />
+
+        <android.support.constraint.Guideline
+            android:id="@+id/ftGuideline2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            app:layout_constraintGuide_begin="32dp" />
+
+        <TextView
+            android:id="@+id/ftNroTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/nro_number"
+            android:textStyle="bold"
+            app:layout_constraintStart_toStartOf="@+id/ftGuideline"
+            app:layout_constraintTop_toTopOf="@+id/ftGuideline2" />
+
+        <EditText
+            android:id="@+id/ftNroText"
+            android:layout_width="60dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="128dp"
+            android:ems="10"
+            android:inputType="number"
+            app:layout_constraintBaseline_toBaselineOf="@+id/ftNroTextView"
+            app:layout_constraintStart_toEndOf="@+id/ftNroTextView" />
+
+        <TextView
+            android:id="@+id/ftPmTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="36dp"
+            android:text="@string/pm_number"
+            android:textStyle="bold"
+            app:layout_constraintStart_toStartOf="@+id/ftGuideline"
+            app:layout_constraintTop_toBottomOf="@+id/ftNroTextView" />
+
+        <EditText
+            android:id="@+id/ftPmText"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:inputType="number"
+            app:layout_constraintBaseline_toBaselineOf="@+id/ftPmTextView"
+            app:layout_constraintEnd_toEndOf="@+id/ftNroText"
+            app:layout_constraintStart_toStartOf="@+id/ftNroText" />
+
+        <TextView
+            android:id="@+id/ftBeTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="36dp"
+            android:text="@string/ft_be_number"
+            android:textStyle="bold"
+            app:layout_constraintStart_toStartOf="@+id/ftGuideline"
+            app:layout_constraintTop_toBottomOf="@+id/ftPmTextView" />
+
+        <EditText
+            android:id="@+id/ftBeText"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:inputType="number"
+            app:layout_constraintBaseline_toBaselineOf="@+id/ftBeTextView"
+            app:layout_constraintEnd_toEndOf="@+id/ftPmText"
+            app:layout_constraintStart_toStartOf="@+id/ftPmText" />
+
+        <TextView
+            android:id="@+id/gFtTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="36dp"
+            android:text="@string/gspot_number"
+            android:textStyle="bold"
+            app:layout_constraintStart_toStartOf="@+id/ftGuideline"
+            app:layout_constraintTop_toBottomOf="@+id/ftBeTextView" />
+
+        <EditText
+            android:id="@+id/gFtText"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:inputType="number"
+            app:layout_constraintBaseline_toBaselineOf="@+id/gFtTextView"
+            app:layout_constraintEnd_toEndOf="@+id/ftBeText"
+            app:layout_constraintStart_toStartOf="@+id/ftBeText" />
+
+        <TextView
+            android:id="@+id/ftAdrTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="36dp"
+            android:text="@string/adresse"
+            android:textStyle="bold"
+            app:layout_constraintStart_toStartOf="@+id/ftGuideline"
+            app:layout_constraintTop_toBottomOf="@+id/gFtTextView" />
+
+        <EditText
+            android:id="@+id/ftAdrText"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="20dp"
+            android:ems="10"
+            android:inputType="textPostalAddress"
+            app:layout_constraintBaseline_toBaselineOf="@+id/ftAdrTextView"
+            app:layout_constraintEnd_toEndOf="@+id/gFtText"
+            app:layout_constraintStart_toEndOf="@+id/ftAdrTextView" />
+
+        <Button
+            android:id="@+id/ftPicButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="36dp"
+            android:layout_marginEnd="36dp"
+            android:text="@string/take_picture"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="@+id/ftGuideline"
+            app:layout_constraintTop_toBottomOf="@+id/ftAdrText" />
+
+    </android.support.constraint.ConstraintLayout>
+
+</android.support.v4.widget.NestedScrollView>

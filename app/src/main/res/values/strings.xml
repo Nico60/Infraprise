@@ -1,0 +1,38 @@
+<resources>
+    <string name="app_name" translatable="false">Infraprise</string>
+    <string name="file_provider" translatable="false">com.nico60.infraprise.fileprovider</string>
+    <string name="nro" translatable="false">NRO</string>
+    <string name="pm" translatable="false">PM</string>
+    <string name="sheet">%s SHEET</string>
+    <string name="nro_number">NRO number :</string>
+    <string name="pm_number">PM number :</string>
+    <string name="aeop_number">AEOP number :</string>
+    <string name="bt_number">BT number :</string>
+    <string name="gspot_number">GSPOT number :</string>
+    <string name="ft_be_number">Code FT BE number :</string>
+    <string name="aeop_height">AEOP height :</string>
+    <string name="aeop_height_pole_to_plant">Height of the pole to plant : %s meters</string>
+    <string name="aeop_distance_pole_to_road">Distance from the pole to the side of the roadway : %s meter(s)</string>
+    <string name="aeop_distance_to_road">Distance from the roadway :</string>
+    <string name="adresse">Adresse :</string>
+    <string name="aeop_warning">Enter a NRO, PM and AEOP number</string>
+    <string name="bt_warning">Enter a NRO, PM and BT number</string>
+    <string name="ft_warning">Enter a NRO, PM and GSPOT number</string>
+    <string name="zip_warning">Empty folder(s) not added in the email !</string>
+    <string name="perm_warning">Write External Storage permission allows us to do store files. Please allow this permission in App Settings.</string>
+    <string name="aeop_survey_action">AEOP POLE SURVEY</string>
+    <string name="bt_survey_action">BT POLE SURVEY</string>
+    <string name="ft_survey_action">FT POLE SURVEY</string>
+    <string name="open_file_action">OPEN A FILE</string>
+    <string name="choose_action">CHOOSE AN ACTION</string>
+    <string name="title_activity_aeop_survey">AEOP pole survey</string>
+    <string name="title_activity_bt_survey">BT pole survey</string>
+    <string name="title_activity_ft_survey">FT pole survey</string>
+    <string name="title_activity_file_explorer">File explorer</string>
+    <string name="take_picture">Picture</string>
+    <string name="delete_file">Delete</string>
+    <string name="send_file">Send</string>
+    <string name="file_saved">\u0020 saved</string>
+    <string name="picture_saved">Picture saved</string>
+    <string name="item_selected">\u0020 Selection(s)</string>
+</resources>

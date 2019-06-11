@@ -1,0 +1,183 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v4.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/colorAppBackground"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior"
+    tools:context=".AeopActivity"
+    tools:showIn="@layout/activity_aeop">
+
+    <android.support.constraint.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <android.support.constraint.Guideline
+            android:id="@+id/aeopGuideline"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintGuide_begin="36dp" />
+
+        <android.support.constraint.Guideline
+            android:id="@+id/aeopGuideline2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            app:layout_constraintGuide_begin="32dp" />
+
+        <TextView
+            android:id="@+id/aeopNroTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/nro_number"
+            android:textStyle="bold"
+            app:layout_constraintStart_toStartOf="@+id/aeopGuideline"
+            app:layout_constraintTop_toTopOf="@+id/aeopGuideline2" />
+
+        <EditText
+            android:id="@+id/aeopNroText"
+            android:layout_width="60dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="128dp"
+            android:ems="10"
+            android:inputType="number"
+            app:layout_constraintBaseline_toBaselineOf="@+id/aeopNroTextView"
+            app:layout_constraintStart_toEndOf="@+id/aeopNroTextView" />
+
+        <TextView
+            android:id="@+id/aeopPmTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="36dp"
+            android:text="@string/pm_number"
+            android:textStyle="bold"
+            app:layout_constraintStart_toStartOf="@+id/aeopGuideline"
+            app:layout_constraintTop_toBottomOf="@+id/aeopNroTextView" />
+
+        <EditText
+            android:id="@+id/aeopPmText"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:inputType="number"
+            app:layout_constraintBaseline_toBaselineOf="@+id/aeopPmTextView"
+            app:layout_constraintEnd_toEndOf="@+id/aeopNroText"
+            app:layout_constraintStart_toStartOf="@+id/aeopNroText" />
+
+        <TextView
+            android:id="@+id/aeopNumTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="36dp"
+            android:text="@string/aeop_number"
+            android:textStyle="bold"
+            app:layout_constraintStart_toStartOf="@+id/aeopGuideline"
+            app:layout_constraintTop_toBottomOf="@+id/aeopPmTextView" />
+
+        <EditText
+            android:id="@+id/aeopNumText"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:inputType="number"
+            app:layout_constraintBaseline_toBaselineOf="@+id/aeopNumTextView"
+            app:layout_constraintEnd_toEndOf="@+id/aeopPmText"
+            app:layout_constraintStart_toStartOf="@+id/aeopPmText" />
+
+        <TextView
+            android:id="@+id/aeopBtTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="36dp"
+            android:text="@string/bt_number"
+            android:textStyle="bold"
+            app:layout_constraintStart_toStartOf="@+id/aeopGuideline"
+            app:layout_constraintTop_toBottomOf="@+id/aeopNumTextView" />
+
+        <EditText
+            android:id="@+id/aeopBtText"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:inputType="number"
+            app:layout_constraintBaseline_toBaselineOf="@+id/aeopBtTextView"
+            app:layout_constraintEnd_toEndOf="@+id/aeopNumText"
+            app:layout_constraintStart_toStartOf="@+id/aeopNumText" />
+
+        <TextView
+            android:id="@+id/aeopHtTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="36dp"
+            android:text="@string/aeop_height"
+            android:textStyle="bold"
+            app:layout_constraintStart_toStartOf="@+id/aeopGuideline"
+            app:layout_constraintTop_toBottomOf="@+id/aeopBtTextView" />
+
+        <EditText
+            android:id="@+id/aeopHtText"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:inputType="number"
+            app:layout_constraintBaseline_toBaselineOf="@+id/aeopHtTextView"
+            app:layout_constraintEnd_toEndOf="@+id/aeopBtText"
+            app:layout_constraintStart_toStartOf="@+id/aeopBtText" />
+
+        <TextView
+            android:id="@+id/aeopDrcTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="36dp"
+            android:text="@string/aeop_distance_to_road"
+            android:textStyle="bold"
+            app:layout_constraintStart_toStartOf="@+id/aeopGuideline"
+            app:layout_constraintTop_toBottomOf="@+id/aeopHtTextView" />
+
+        <EditText
+            android:id="@+id/aeopDrcText"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:inputType="numberDecimal"
+            app:layout_constraintBaseline_toBaselineOf="@+id/aeopDrcTextView"
+            app:layout_constraintEnd_toEndOf="@+id/aeopHtText"
+            app:layout_constraintStart_toStartOf="@+id/aeopHtText" />
+
+        <TextView
+            android:id="@+id/aeopAdrTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="36dp"
+            android:text="@string/adresse"
+            android:textStyle="bold"
+            app:layout_constraintStart_toStartOf="@+id/aeopGuideline"
+            app:layout_constraintTop_toBottomOf="@+id/aeopDrcTextView" />
+
+        <EditText
+            android:id="@+id/aeopAdrText"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="20dp"
+            android:ems="10"
+            android:inputType="textPostalAddress"
+            app:layout_constraintBaseline_toBaselineOf="@+id/aeopAdrTextView"
+            app:layout_constraintEnd_toEndOf="@+id/aeopDrcText"
+            app:layout_constraintStart_toEndOf="@+id/aeopAdrTextView" />
+
+        <Button
+            android:id="@+id/aeopPicButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="36dp"
+            android:layout_marginEnd="36dp"
+            android:text="@string/take_picture"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="@+id/aeopGuideline"
+            app:layout_constraintTop_toBottomOf="@+id/aeopAdrText" />
+
+    </android.support.constraint.ConstraintLayout>
+
+</android.support.v4.widget.NestedScrollView>

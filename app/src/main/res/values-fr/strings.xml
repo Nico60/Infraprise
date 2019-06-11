@@ -1,0 +1,34 @@
+<resources>
+    <string name="sheet">FICHE %s</string>
+    <string name="nro_number">NRO numéro :</string>
+    <string name="pm_number">PM numéro :</string>
+    <string name="aeop_number">AEOP numéro :</string>
+    <string name="bt_number">BT numéro :</string>
+    <string name="gspot_number">GSPOT numéro :</string>
+    <string name="ft_be_number">Code FT BE numéro :</string>
+    <string name="aeop_height">Hauteur AEOP :</string>
+    <string name="aeop_height_pole_to_plant">Hauteur poteau à planter : %s mètres</string>
+    <string name="aeop_distance_pole_to_road">Distance du poteau depuis la rive de chaussée : %s mètre(s)</string>
+    <string name="aeop_distance_to_road">Distance de la rive de chaussée :</string>
+    <string name="adresse">Adresse :</string>
+    <string name="aeop_warning">Saisir un numéro de NRO, PM et d\'AEOP</string>
+    <string name="bt_warning">Saisir un numéro de NRO, PM et de BT</string>
+    <string name="ft_warning">Saisir un numéro de NRO, PM et de GSPOT</string>
+    <string name="zip_warning">Dossier(s) vide(s) non ajouté(s) à l\'email !</string>
+    <string name="perm_warning">La permission d\'écriture permet de stocker des fichiers. Veuillez autoriser cette permission dans les paramètres de l\'application.</string>
+    <string name="aeop_survey_action">RELEVER POTEAU AEOP</string>
+    <string name="bt_survey_action">RELEVER POTEAU BT</string>
+    <string name="ft_survey_action">RELEVER POTEAU FT</string>
+    <string name="open_file_action">OUVRIR UN FICHIER</string>
+    <string name="choose_action">CHOISIR UNE ACTION</string>
+    <string name="title_activity_aeop_survey">Relevé de poteau AEOP</string>
+    <string name="title_activity_bt_survey">Relevé de poteau BT</string>
+    <string name="title_activity_ft_survey">Relevé de poteau FT</string>
+    <string name="title_activity_file_explorer">Explorateur de fichier</string>
+    <string name="take_picture">Photo</string>
+    <string name="delete_file">Effacer</string>
+    <string name="send_file">Envoyer</string>
+    <string name="file_saved">\u0020 sauvegardé</string>
+    <string name="picture_saved">Photo sauvegardée</string>
+    <string name="item_selected">\u0020 Sélection(s)</string>
+</resources>

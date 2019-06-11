@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v4.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/colorAppBackground"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior"
+    tools:context=".BtActivity"
+    tools:showIn="@layout/activity_bt">
+
+    <android.support.constraint.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <android.support.constraint.Guideline
+            android:id="@+id/btGuideline"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintGuide_begin="36dp" />
+
+        <android.support.constraint.Guideline
+            android:id="@+id/btGuideline2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            app:layout_constraintGuide_begin="32dp" />
+
+        <TextView
+            android:id="@+id/btNroTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/nro_number"
+            android:textStyle="bold"
+            app:layout_constraintStart_toStartOf="@+id/btGuideline"
+            app:layout_constraintTop_toTopOf="@+id/btGuideline2" />
+
+        <EditText
+            android:id="@+id/btNroText"
+            android:layout_width="60dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="128dp"
+            android:ems="10"
+            android:inputType="number"
+            app:layout_constraintBaseline_toBaselineOf="@+id/btNroTextView"
+            app:layout_constraintStart_toEndOf="@+id/btNroTextView" />
+
+        <TextView
+            android:id="@+id/btPmTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="36dp"
+            android:text="@string/pm_number"
+            android:textStyle="bold"
+            app:layout_constraintStart_toStartOf="@+id/btGuideline"
+            app:layout_constraintTop_toBottomOf="@+id/btNroTextView" />
+
+        <EditText
+            android:id="@+id/btPmText"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:inputType="number"
+            app:layout_constraintBaseline_toBaselineOf="@+id/btPmTextView"
+            app:layout_constraintEnd_toEndOf="@+id/btNroText"
+            app:layout_constraintStart_toStartOf="@+id/btNroText" />
+
+        <TextView
+            android:id="@+id/btBtTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="36dp"
+            android:text="@string/bt_number"
+            android:textStyle="bold"
+            app:layout_constraintStart_toStartOf="@+id/btGuideline"
+            app:layout_constraintTop_toBottomOf="@+id/btPmTextView" />
+
+        <EditText
+            android:id="@+id/btBtText"
+            android:layout_width="60dp"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:inputType="number"
+            app:layout_constraintBaseline_toBaselineOf="@+id/btBtTextView"
+            app:layout_constraintEnd_toEndOf="@+id/btPmText"
+            app:layout_constraintStart_toStartOf="@+id/btPmText" />
+
+        <TextView
+            android:id="@+id/btAdrTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="36dp"
+            android:text="@string/adresse"
+            android:textStyle="bold"
+            app:layout_constraintStart_toStartOf="@+id/btGuideline"
+            app:layout_constraintTop_toBottomOf="@+id/btBtTextView" />
+
+        <EditText
+            android:id="@+id/btAdrText"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="20dp"
+            android:ems="10"
+            android:inputType="textPostalAddress"
+            app:layout_constraintBaseline_toBaselineOf="@+id/btAdrTextView"
+            app:layout_constraintEnd_toEndOf="@+id/btBtText"
+            app:layout_constraintStart_toEndOf="@+id/btAdrTextView" />
+
+        <Button
+            android:id="@+id/btPicButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="36dp"
+            android:layout_marginEnd="36dp"
+            android:text="@string/take_picture"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="@+id/btGuideline"
+            app:layout_constraintTop_toBottomOf="@+id/btAdrText" />
+
+    </android.support.constraint.ConstraintLayout>
+
+</android.support.v4.widget.NestedScrollView>
