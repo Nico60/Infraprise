@@ -47,6 +47,7 @@ public class FilesListActivity extends AppCompatActivity {
     private File mOldDir;
     private File mRootDir;
     private FileListAdaptater mAdapter;
+    private int mCheckedPosition;
     private Intent mSendIntent;
     private Intent mViewIntent;
     private ListView mListView;
@@ -72,9 +73,7 @@ public class FilesListActivity extends AppCompatActivity {
         mListView.setOnItemClickListener(new AdapterView.OnItemClickListener(){
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id){
-                String name = mArrayListItem.get(position).getFileName();
-                mNewList = new File(mCurrentList, name);
-                openDir(mNewList);
+                openClickedItem(position);
             }
         });
         mListView.setAdapter(mAdapter);
@@ -104,6 +103,14 @@ public class FilesListActivity extends AppCompatActivity {
 
         @Override
         public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
+            if (mListView.getCount() == 1) {
+                menu.removeItem(R.id.select_all);
+                return true;
+            }
+            if (mListView.getCheckedItemCount() > 1) {
+                menu.removeItem(R.id.open);
+                return true;
+            }
             return false;
         }
 
@@ -118,6 +125,17 @@ public class FilesListActivity extends AppCompatActivity {
                     sendFileItem();
                     mode.finish();
                     return true;
+                case R.id.open:
+                    openClickedItem(mCheckedPosition);
+                    mode.finish();
+                    return true;
+                case R.id.select_all:
+                    selectAllItem();
+                    return true;
+                case R.id.deselect_all:
+                    deselectAllItem();
+                    mode.finish();
+                    return true;
                 default:
                     return false;
             }
@@ -125,8 +143,12 @@ public class FilesListActivity extends AppCompatActivity {
 
         @Override
         public void onItemCheckedStateChanged(ActionMode mode, int position, long id, boolean checked) {
+            mCheckedPosition = position;
             int checkedItems = mListView.getCheckedItemCount();
             mode.setTitle(checkedItems + getString(R.string.item_selected));
+            if (checked) {
+                invalidateOptionsMenu();
+            }
         }
     }
 
@@ -138,6 +160,12 @@ public class FilesListActivity extends AppCompatActivity {
             }
         }
         return mItem;
+    }
+
+    private void openClickedItem(int position) {
+        String name = mArrayListItem.get(position).getFileName();
+        mNewList = new File(mCurrentList, name);
+        openDir(mNewList);
     }
 
     private void openDir(File file) {
@@ -208,6 +236,16 @@ public class FilesListActivity extends AppCompatActivity {
             mSendIntent.putParcelableArrayListExtra(Intent.EXTRA_STREAM, mZipUriList);
             startActivityForResult(mSendIntent, REQUEST_FILE_SEND);
         }
+    }
+
+    private void selectAllItem() {
+        for (int i = 0; i < mListView.getCount(); i++) {
+            mListView.setItemChecked(i, true);
+        }
+    }
+
+    private void deselectAllItem() {
+        mItem.clear();
     }
 
     private File zipFolder(File zipFolder) {

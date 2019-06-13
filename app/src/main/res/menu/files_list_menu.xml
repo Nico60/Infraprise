@@ -5,10 +5,22 @@
         android:id="@+id/delete"
         android:icon="@android:drawable/ic_menu_delete"
         android:title="@string/delete_file"
-        app:showAsAction="always" />
+        app:showAsAction="ifRoom" />
     <item
         android:id="@+id/send"
         android:icon="@android:drawable/ic_menu_send"
         android:title="@string/send_file"
-        app:showAsAction="always" />
+        app:showAsAction="ifRoom" />
+    <item
+        android:id="@+id/open"
+        android:title="@string/open_file"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/select_all"
+        android:title="@string/select_all_items"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/deselect_all"
+        android:title="@string/deselect_all_items"
+        app:showAsAction="never" />
 </menu>
