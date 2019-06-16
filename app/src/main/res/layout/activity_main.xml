@@ -14,16 +14,31 @@
         android:layout_height="match_parent"
         android:orientation="vertical">
 
-        <TextView
+        <android.support.design.widget.AppBarLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="32dp"
-            android:layout_marginBottom="32dp"
-            android:gravity="center_horizontal|center_vertical"
-            android:text="@string/choose_action"
-            android:textColor="#000"
-            android:textSize="24sp"
-            android:textStyle="bold" />
+            android:theme="@style/AppTheme.AppBarOverlay">
+
+            <android.support.v7.widget.Toolbar
+                android:id="@+id/mainToolbar"
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"
+                android:background="?attr/colorPrimary"
+                app:popupTheme="@style/AppTheme.PopupOverlay"
+                app:titleTextColor="@color/textColorPrimary" />
+
+        </android.support.design.widget.AppBarLayout>
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:layout_marginBottom="8dp"
+            android:scaleType="center"
+            android:tint="@color/textColorPrimary"
+            app:srcCompat="@drawable/banner">
+
+        </ImageView>
 
         <LinearLayout
             android:id="@+id/mainLinear"
@@ -36,14 +51,15 @@
                 android:layout_width="match_parent"
                 android:layout_height="72dp"
                 android:layout_marginLeft="8dp"
-                android:layout_marginTop="24dp"
+                android:layout_marginTop="8dp"
                 android:layout_marginRight="8dp"
-                app:cardBackgroundColor="@color/colorCardBackground"
+                app:cardBackgroundColor="@color/colorAppBackground"
                 app:cardCornerRadius="8dp">
 
                 <RelativeLayout
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent">
+                    android:layout_height="match_parent"
+                    android:background="@drawable/card_view_shape">
 
                     <TextView
                         android:id="@+id/textView"
@@ -52,18 +68,18 @@
                         android:layout_alignParentTop="true"
                         android:layout_alignParentEnd="true"
                         android:layout_alignParentBottom="true"
-                        android:layout_toEndOf="@id/imageView"
+                        android:layout_toEndOf="@id/aeopImageView"
                         android:gravity="center_horizontal|center_vertical"
                         android:text="@string/aeop_survey_action"
                         android:textAlignment="center"
-                        android:textColor="#000"
+                        android:textColor="@color/textColorPrimary"
                         android:textSize="18sp"
                         android:textStyle="bold" />
 
                     <ImageView
-                        android:id="@+id/imageView"
+                        android:id="@+id/aeopImageView"
                         android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
+                        android:layout_height="match_parent"
                         android:layout_alignParentStart="true"
                         android:layout_alignParentTop="true"
                         android:layout_alignParentBottom="true"
@@ -71,8 +87,8 @@
                         android:layout_marginTop="8dp"
                         android:layout_marginBottom="8dp"
                         android:adjustViewBounds="true"
-                        android:contentDescription="TODO"
-                        app:srcCompat="@drawable/aeop_pic" />
+                        android:tint="@color/textColorPrimary"
+                        app:srcCompat="@drawable/ic_aeop_pole" />
 
                 </RelativeLayout>
 
@@ -85,12 +101,13 @@
                 android:layout_marginLeft="8dp"
                 android:layout_marginTop="8dp"
                 android:layout_marginRight="8dp"
-                app:cardBackgroundColor="@color/colorCardBackground"
+                app:cardBackgroundColor="@color/colorAppBackground"
                 app:cardCornerRadius="8dp">
 
                 <RelativeLayout
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent">
+                    android:layout_height="match_parent"
+                    android:background="@drawable/card_view_shape">
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -98,18 +115,18 @@
                         android:layout_alignParentTop="true"
                         android:layout_alignParentEnd="true"
                         android:layout_alignParentBottom="true"
-                        android:layout_toEndOf="@id/imageView3"
+                        android:layout_toEndOf="@id/btImageView"
                         android:gravity="center_horizontal|center_vertical"
                         android:text="@string/bt_survey_action"
                         android:textAlignment="center"
-                        android:textColor="#000"
+                        android:textColor="@color/textColorPrimary"
                         android:textSize="18sp"
                         android:textStyle="bold" />
 
                     <ImageView
-                        android:id="@+id/imageView3"
+                        android:id="@+id/btImageView"
                         android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
+                        android:layout_height="match_parent"
                         android:layout_alignParentStart="true"
                         android:layout_alignParentTop="true"
                         android:layout_alignParentBottom="true"
@@ -117,7 +134,8 @@
                         android:layout_marginTop="8dp"
                         android:layout_marginBottom="8dp"
                         android:adjustViewBounds="true"
-                        app:srcCompat="@drawable/bt_pic" />
+                        android:tint="@color/textColorPrimary"
+                        app:srcCompat="@drawable/ic_bt_pole" />
 
                 </RelativeLayout>
 
@@ -130,17 +148,18 @@
                 android:layout_marginLeft="8dp"
                 android:layout_marginTop="8dp"
                 android:layout_marginRight="8dp"
-                app:cardBackgroundColor="@color/colorCardBackground"
+                app:cardBackgroundColor="@color/colorAppBackground"
                 app:cardCornerRadius="8dp">
 
                 <RelativeLayout
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent">
+                    android:layout_height="match_parent"
+                    android:background="@drawable/card_view_shape">
 
                     <ImageView
-                        android:id="@+id/imageView2"
+                        android:id="@+id/ftImageView"
                         android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
+                        android:layout_height="match_parent"
                         android:layout_alignParentStart="true"
                         android:layout_alignParentTop="true"
                         android:layout_alignParentBottom="true"
@@ -148,7 +167,8 @@
                         android:layout_marginTop="8dp"
                         android:layout_marginBottom="8dp"
                         android:adjustViewBounds="true"
-                        app:srcCompat="@drawable/ft_pic" />
+                        android:tint="@color/textColorPrimary"
+                        app:srcCompat="@drawable/ic_ft_pole" />
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -156,11 +176,11 @@
                         android:layout_alignParentTop="true"
                         android:layout_alignParentEnd="true"
                         android:layout_alignParentBottom="true"
-                        android:layout_toEndOf="@id/imageView2"
+                        android:layout_toEndOf="@id/ftImageView"
                         android:gravity="center_horizontal|center_vertical"
                         android:text="@string/ft_survey_action"
                         android:textAlignment="center"
-                        android:textColor="#000"
+                        android:textColor="@color/textColorPrimary"
                         android:textSize="18sp"
                         android:textStyle="bold" />
 
@@ -175,19 +195,45 @@
                 android:layout_marginLeft="8dp"
                 android:layout_marginTop="8dp"
                 android:layout_marginRight="8dp"
-                android:layout_marginBottom="24dp"
-                app:cardBackgroundColor="@color/colorCardBackground"
+                android:layout_marginBottom="8dp"
+                app:cardBackgroundColor="@color/colorAppBackground"
                 app:cardCornerRadius="8dp">
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_horizontal|center_vertical"
-                    android:text="@string/open_file_action"
-                    android:textAlignment="center"
-                    android:textColor="#000"
-                    android:textSize="18sp"
-                    android:textStyle="bold" />
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@drawable/card_view_shape">
+
+                    <ImageView
+                        android:id="@+id/folderImageView"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_alignParentStart="true"
+                        android:layout_alignParentTop="true"
+                        android:layout_alignParentBottom="true"
+                        android:layout_marginStart="16dp"
+                        android:layout_marginTop="8dp"
+                        android:layout_marginBottom="8dp"
+                        android:adjustViewBounds="true"
+                        android:tint="@color/textColorPrimary"
+                        app:srcCompat="@drawable/ic_folder" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentTop="true"
+                        android:layout_alignParentEnd="true"
+                        android:layout_alignParentBottom="true"
+                        android:layout_toEndOf="@id/folderImageView"
+                        android:gravity="center_horizontal|center_vertical"
+                        android:text="@string/open_file_action"
+                        android:textAlignment="center"
+                        android:textColor="@color/textColorPrimary"
+                        android:textSize="18sp"
+                        android:textStyle="bold" />
+
+                </RelativeLayout>
 
             </android.support.v7.widget.CardView>
 

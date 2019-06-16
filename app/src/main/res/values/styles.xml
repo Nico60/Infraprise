@@ -9,9 +9,34 @@
     <style name="AppTheme.NoActionBar">
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
-        <item name="colorControlActivated">#A12F3A50</item>
+        <item name="colorControlActivated">@color/colorActionModeBg</item>
         <item name="windowActionModeOverlay">true</item>
-        <item name="actionModeBackground">@color/colorActionModeBg</item>
+        <item name="android:itemBackground">@color/colorActionModeBg</item>
+        <item name="android:itemTextAppearance">@style/AppTheme.MenuItemTextStyle</item>
+        <item name="actionModeStyle">@style/AppTheme.ActionModeStyle</item>
+        <item name="actionModeCloseButtonStyle">@style/AppTheme.ActionModeCloseButtonStyle</item>
+        <item name="actionOverflowButtonStyle">@style/AppTheme.ActionModeOverflowButtonStyle</item>
+    </style>
+
+    <style name="AppTheme.MenuItemTextStyle" parent="@android:style/TextAppearance.Widget">
+        <item name="android:textColor">@color/textColorPrimary</item>
+    </style>
+
+    <style name="AppTheme.ActionModeStyle" parent="@style/Widget.AppCompat.ActionMode">
+        <item name="background">@color/colorActionModeBg</item>
+        <item name="titleTextStyle">@style/AppTheme.ActionModeTitleTextStyle</item>
+    </style>
+
+    <style name="AppTheme.ActionModeTitleTextStyle" parent="@style/TextAppearance.AppCompat.Widget.ActionMode.Title">
+        <item name="android:textColor">@color/textColorPrimary</item>
+    </style>
+
+    <style name="AppTheme.ActionModeCloseButtonStyle" parent="Widget.AppCompat.Light.ActionButton.CloseMode">
+        <item name="android:tint">@color/textColorPrimary</item>
+    </style>
+
+    <style name="AppTheme.ActionModeOverflowButtonStyle" parent="Widget.AppCompat.Light.ActionButton.Overflow">
+        <item name="android:tint">@color/textColorPrimary</item>
     </style>
 
     <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />

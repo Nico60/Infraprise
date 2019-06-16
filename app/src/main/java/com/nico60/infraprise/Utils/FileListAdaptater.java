@@ -1,6 +1,7 @@
 package com.nico60.infraprise.Utils;
 
 import android.content.Context;
+import android.graphics.Typeface;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,10 +26,14 @@ public class FileListAdaptater extends ArrayAdapter<ListItem> {
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         ListItem item = arrayListItem.get(position);
+        String itemText = item.getFileName();
         LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View view = inflater.inflate(R.layout.list_view_items, null);
         TextView textView = (TextView) view.findViewById(R.id.textListView);
-        textView.setText(item.getFileName());
+        textView.setText(itemText);
+        if (itemText.endsWith(".txt") || itemText.endsWith(".jpg")) {
+            textView.setTypeface(null, Typeface.NORMAL);
+        }
         return view;
     }
 }

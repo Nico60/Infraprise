@@ -11,112 +11,140 @@
 
     <android.support.constraint.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="16dp">
 
-        <android.support.constraint.Guideline
-            android:id="@+id/btGuideline"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            app:layout_constraintGuide_begin="36dp" />
+        <android.support.constraint.ConstraintLayout
+            android:id="@+id/btConstraintLayout"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@drawable/card_view_shape"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
 
-        <android.support.constraint.Guideline
-            android:id="@+id/btGuideline2"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            app:layout_constraintGuide_begin="32dp" />
+            <android.support.constraint.Guideline
+                android:id="@+id/btGuideline"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                app:layout_constraintGuide_begin="8dp" />
 
-        <TextView
-            android:id="@+id/btNroTextView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/nro_number"
-            android:textStyle="bold"
-            app:layout_constraintStart_toStartOf="@+id/btGuideline"
-            app:layout_constraintTop_toTopOf="@+id/btGuideline2" />
+            <android.support.constraint.Guideline
+                android:id="@+id/btGuideline2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                app:layout_constraintGuide_begin="16dp" />
 
-        <EditText
-            android:id="@+id/btNroText"
-            android:layout_width="60dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="128dp"
-            android:ems="10"
-            android:inputType="number"
-            app:layout_constraintBaseline_toBaselineOf="@+id/btNroTextView"
-            app:layout_constraintStart_toEndOf="@+id/btNroTextView" />
+            <TextView
+                android:id="@+id/btNroTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/nro_number"
+                android:textColor="@color/textColorPrimary"
+                android:textStyle="bold"
+                app:layout_constraintStart_toStartOf="@+id/btGuideline"
+                app:layout_constraintTop_toTopOf="@+id/btGuideline2" />
 
-        <TextView
-            android:id="@+id/btPmTextView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="36dp"
-            android:text="@string/pm_number"
-            android:textStyle="bold"
-            app:layout_constraintStart_toStartOf="@+id/btGuideline"
-            app:layout_constraintTop_toBottomOf="@+id/btNroTextView" />
+            <EditText
+                android:id="@+id/btNroText"
+                android:layout_width="60dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="128dp"
+                android:backgroundTint="@color/textColorPrimary"
+                android:ems="10"
+                android:inputType="number"
+                android:textColor="@color/textColorPrimary"
+                app:layout_constraintBaseline_toBaselineOf="@+id/btNroTextView"
+                app:layout_constraintStart_toEndOf="@+id/btNroTextView" />
 
-        <EditText
-            android:id="@+id/btPmText"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:ems="10"
-            android:inputType="number"
-            app:layout_constraintBaseline_toBaselineOf="@+id/btPmTextView"
-            app:layout_constraintEnd_toEndOf="@+id/btNroText"
-            app:layout_constraintStart_toStartOf="@+id/btNroText" />
+            <TextView
+                android:id="@+id/btPmTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="36dp"
+                android:text="@string/pm_number"
+                android:textColor="@color/textColorPrimary"
+                android:textStyle="bold"
+                app:layout_constraintStart_toStartOf="@+id/btGuideline"
+                app:layout_constraintTop_toBottomOf="@+id/btNroTextView" />
 
-        <TextView
-            android:id="@+id/btBtTextView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="36dp"
-            android:text="@string/bt_number"
-            android:textStyle="bold"
-            app:layout_constraintStart_toStartOf="@+id/btGuideline"
-            app:layout_constraintTop_toBottomOf="@+id/btPmTextView" />
+            <EditText
+                android:id="@+id/btPmText"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:backgroundTint="@color/textColorPrimary"
+                android:ems="10"
+                android:inputType="number"
+                android:textColor="@color/textColorPrimary"
+                app:layout_constraintBaseline_toBaselineOf="@+id/btPmTextView"
+                app:layout_constraintEnd_toEndOf="@+id/btNroText"
+                app:layout_constraintStart_toStartOf="@+id/btNroText" />
 
-        <EditText
-            android:id="@+id/btBtText"
-            android:layout_width="60dp"
-            android:layout_height="wrap_content"
-            android:ems="10"
-            android:inputType="number"
-            app:layout_constraintBaseline_toBaselineOf="@+id/btBtTextView"
-            app:layout_constraintEnd_toEndOf="@+id/btPmText"
-            app:layout_constraintStart_toStartOf="@+id/btPmText" />
+            <TextView
+                android:id="@+id/btBtTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="36dp"
+                android:text="@string/bt_number"
+                android:textColor="@color/textColorPrimary"
+                android:textStyle="bold"
+                app:layout_constraintStart_toStartOf="@+id/btGuideline"
+                app:layout_constraintTop_toBottomOf="@+id/btPmTextView" />
 
-        <TextView
-            android:id="@+id/btAdrTextView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="36dp"
-            android:text="@string/adresse"
-            android:textStyle="bold"
-            app:layout_constraintStart_toStartOf="@+id/btGuideline"
-            app:layout_constraintTop_toBottomOf="@+id/btBtTextView" />
+            <EditText
+                android:id="@+id/btBtText"
+                android:layout_width="60dp"
+                android:layout_height="wrap_content"
+                android:backgroundTint="@color/textColorPrimary"
+                android:ems="10"
+                android:inputType="number"
+                android:textColor="@color/textColorPrimary"
+                app:layout_constraintBaseline_toBaselineOf="@+id/btBtTextView"
+                app:layout_constraintEnd_toEndOf="@+id/btPmText"
+                app:layout_constraintStart_toStartOf="@+id/btPmText" />
 
-        <EditText
-            android:id="@+id/btAdrText"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="20dp"
-            android:ems="10"
-            android:inputType="textPostalAddress"
-            app:layout_constraintBaseline_toBaselineOf="@+id/btAdrTextView"
-            app:layout_constraintEnd_toEndOf="@+id/btBtText"
-            app:layout_constraintStart_toEndOf="@+id/btAdrTextView" />
+            <TextView
+                android:id="@+id/btAdrTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="36dp"
+                android:layout_marginBottom="24dp"
+                android:text="@string/adresse"
+                android:textColor="@color/textColorPrimary"
+                android:textStyle="bold"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="@+id/btGuideline"
+                app:layout_constraintTop_toBottomOf="@+id/btBtTextView" />
+
+            <EditText
+                android:id="@+id/btAdrText"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="20dp"
+                android:backgroundTint="@color/textColorPrimary"
+                android:ems="10"
+                android:inputType="textPostalAddress"
+                android:textColor="@color/textColorPrimary"
+                app:layout_constraintBaseline_toBaselineOf="@+id/btAdrTextView"
+                app:layout_constraintEnd_toEndOf="@+id/btBtText"
+                app:layout_constraintStart_toEndOf="@+id/btAdrTextView" />
+
+        </android.support.constraint.ConstraintLayout>
 
         <Button
             android:id="@+id/btPicButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="36dp"
-            android:layout_marginEnd="36dp"
+            android:layout_marginTop="32dp"
+            android:background="@drawable/card_view_shape"
             android:text="@string/take_picture"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="@+id/btGuideline"
-            app:layout_constraintTop_toBottomOf="@+id/btAdrText" />
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/btConstraintLayout" />
 
     </android.support.constraint.ConstraintLayout>
 
