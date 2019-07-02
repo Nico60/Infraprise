@@ -1,5 +1,8 @@
 package com.nico60.infraprise;
 
+import android.app.AlertDialog;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Environment;
@@ -8,50 +11,54 @@ import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.util.SparseBooleanArray;
 import android.view.ActionMode;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.webkit.MimeTypeMap;
 import android.widget.AdapterView;
+import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import com.nico60.infraprise.Utils.AppFileUtils;
 import com.nico60.infraprise.Utils.FileListAdaptater;
 import com.nico60.infraprise.Utils.ListItem;
 
-import java.io.BufferedInputStream;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipOutputStream;
+import java.util.List;
 
 import static android.support.v4.content.FileProvider.getUriForFile;
-import static java.lang.String.format;
 
 public class FilesListActivity extends AppCompatActivity {
 
     private static final int REQUEST_FILE_VIEW = 1;
     private static final int REQUEST_FILE_SEND = 2;
 
+    private ActionMode mMode;
     private ArrayList<ListItem> mArrayListItem;
     private ArrayList<String> mItem;
     private ArrayList<Uri> mZipUriList;
     private File mCurrentList;
+    private File mCurrentPath;
+    private File mDirSelected;
+    private File mSdRootPath;
     private File mNewList;
     private File mOldDir;
     private File mRootDir;
     private FileListAdaptater mAdapter;
-    private int mCheckedPosition;
+    private AppFileUtils mAppFileUtils;
+    private int mId;
     private Intent mSendIntent;
     private Intent mViewIntent;
     private ListView mListView;
     private String mExtType;
+    private String mItemName;
+    private String mStorageDir = "..";
+    private String[] mListDir;
     private Uri mZipUri;
 
     @Override
@@ -60,6 +67,10 @@ public class FilesListActivity extends AppCompatActivity {
         setContentView(R.layout.activity_files_list);
 
         Toolbar fileToolbar = findViewById(R.id.fileToolbar);
+
+        mAppFileUtils = new AppFileUtils(this);
+
+        mSdRootPath = Environment.getExternalStorageDirectory();
 
         mArrayListItem = new ArrayList<>();
         mItem = new ArrayList<>();
@@ -73,7 +84,7 @@ public class FilesListActivity extends AppCompatActivity {
         mListView.setOnItemClickListener(new AdapterView.OnItemClickListener(){
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id){
-                openClickedItem(position);
+                openClickedItem(getItemNameAtPosition(position));
             }
         });
         mListView.setAdapter(mAdapter);
@@ -90,32 +101,34 @@ public class FilesListActivity extends AppCompatActivity {
     private class ModeCallback implements ListView.MultiChoiceModeListener {
         @Override
         public boolean onCreateActionMode(ActionMode mode, Menu menu) {
-            MenuInflater inflater = mode.getMenuInflater();
-            inflater.inflate(R.menu.files_list_menu, menu);
             return true;
         }
 
         @Override
         public void onDestroyActionMode(ActionMode mode) {
+            mMode = null;
             mZipUriList.clear();
             mItem.clear();
         }
 
         @Override
         public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
-            if (mListView.getCount() == 1) {
+            menu.clear();
+            MenuInflater inflater = mode.getMenuInflater();
+            inflater.inflate(R.menu.files_list_mode_menu, menu);
+            if (mListView.getCount() == 1 || mListView.getCount() == getItemCheckedCount()) {
                 menu.removeItem(R.id.select_all);
-                return true;
             }
-            if (mListView.getCheckedItemCount() > 1) {
+            if (getItemCheckedCount() > 1) {
                 menu.removeItem(R.id.open);
-                return true;
+                menu.removeItem(R.id.rename);
             }
-            return false;
+            return true;
         }
 
         @Override
         public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
+            mMode = mode;
             switch (item.getItemId()) {
                 case R.id.delete:
                     deleteFileItem();
@@ -126,7 +139,7 @@ public class FilesListActivity extends AppCompatActivity {
                     mode.finish();
                     return true;
                 case R.id.open:
-                    openClickedItem(mCheckedPosition);
+                    openClickedItem(mItemName);
                     mode.finish();
                     return true;
                 case R.id.select_all:
@@ -136,6 +149,20 @@ public class FilesListActivity extends AppCompatActivity {
                     deselectAllItem();
                     mode.finish();
                     return true;
+                case R.id.copy:
+                    mId = 1;
+                    loadFileList(mSdRootPath);
+                    selectFolder();
+                    return true;
+                case R.id.move:
+                    mId = 2;
+                    loadFileList(mSdRootPath);
+                    selectFolder();
+                    return true;
+                case R.id.rename:
+                    rename();
+                    mode.finish();
+                    return true;
                 default:
                     return false;
             }
@@ -143,13 +170,30 @@ public class FilesListActivity extends AppCompatActivity {
 
         @Override
         public void onItemCheckedStateChanged(ActionMode mode, int position, long id, boolean checked) {
-            mCheckedPosition = position;
-            int checkedItems = mListView.getCheckedItemCount();
-            mode.setTitle(checkedItems + getString(R.string.item_selected));
-            if (checked) {
-                invalidateOptionsMenu();
+            mode.setTitle(getItemCheckedCount() + getString(R.string.item_selected));
+            if (getItemCheckedCount() == 1) {
+                mItemName = getItemNameAtPosition(position);
             }
+            mode.invalidate();
         }
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.files_list_main_menu, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()){
+            case R.id.create_folder:
+                createFolder();
+                return true;
+            default:
+                break;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     private ArrayList<String> itemToString() {
@@ -162,8 +206,15 @@ public class FilesListActivity extends AppCompatActivity {
         return mItem;
     }
 
-    private void openClickedItem(int position) {
-        String name = mArrayListItem.get(position).getFileName();
+    private String getItemNameAtPosition(int position) {
+        return mArrayListItem.get(position).getFileName();
+    }
+
+    private int getItemCheckedCount() {
+        return mListView.getCheckedItemCount();
+    }
+
+    private void openClickedItem(String name) {
         mNewList = new File(mCurrentList, name);
         openDir(mNewList);
     }
@@ -187,32 +238,31 @@ public class FilesListActivity extends AppCompatActivity {
         mViewIntent.addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION|Intent.FLAG_GRANT_READ_URI_PERMISSION);
         mViewIntent.putExtra(Intent.EXTRA_STREAM, uri);
         if (uri != null) {
-            mExtType = getFileExt(uri.toString());
+            mExtType = mAppFileUtils.getFileExt(uri.toString());
         }
         mViewIntent.setDataAndType(uri, mExtType == null ? "text/plain" : mExtType);
         startActivityForResult(mViewIntent, REQUEST_FILE_VIEW);
     }
 
-    private void deleteFileItem() {
+    private void copyFileItem() {
         for (String item : itemToString()) {
-            File deleteFile = new File(mNewList, item);
-            deleteFile(deleteFile);
+            File fileToCopy = new File(mNewList, item);
+            mAppFileUtils.copy(fileToCopy, mCurrentPath);
         }
     }
 
-    private void deleteFile(File file) {
-        if (file.isDirectory()) {
-            String[] child = file.list();
-            for (String del : child) {
-                File temp = new File(file, del);
-                if (temp.isDirectory()) {
-                    deleteFile(temp);
-                } else {
-                    temp.delete();
-                }
-            }
+    private void moveFileItem() {
+        for (String item : itemToString()) {
+            File fileToMove = new File(mNewList, item);
+            mAppFileUtils.move(fileToMove, mCurrentPath);
         }
-        file.delete();
+    }
+
+    private void deleteFileItem() {
+        for (String item : itemToString()) {
+            File fileToDelete = new File(mNewList, item);
+            mAppFileUtils.delete(fileToDelete);
+        }
         updateList(mNewList);
     }
 
@@ -220,7 +270,7 @@ public class FilesListActivity extends AppCompatActivity {
         for(String itemPath : itemToString()) {
             File fileUri = new File(mCurrentList, itemPath);
             if (fileUri.isDirectory()) {
-                mZipUri = getFileUri(zipFolder(fileUri));
+                mZipUri = getFileUri(mAppFileUtils.zipFolder(fileUri));
             } else {
                 mZipUri = getFileUri(fileUri);
             }
@@ -228,10 +278,11 @@ public class FilesListActivity extends AppCompatActivity {
                 mZipUriList.add(mZipUri);
             }
         }
+        updateList(mCurrentList);
         if (mZipUriList.size() >= 1 || mZipUri != null) {
             mSendIntent = new Intent();
             mSendIntent.setAction(Intent.ACTION_SEND_MULTIPLE);
-            mExtType = getFileExt(mZipUriList.toString());
+            mExtType = mAppFileUtils.getFileExt(mZipUriList.toString());
             mSendIntent.setType(mExtType == null ? "text/plain" : mExtType);
             mSendIntent.putParcelableArrayListExtra(Intent.EXTRA_STREAM, mZipUriList);
             startActivityForResult(mSendIntent, REQUEST_FILE_SEND);
@@ -239,62 +290,187 @@ public class FilesListActivity extends AppCompatActivity {
     }
 
     private void selectAllItem() {
-        for (int i = 0; i < mListView.getCount(); i++) {
-            mListView.setItemChecked(i, true);
-        }
+        new Thread() {
+            @Override
+            public void run() {
+                try {
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            for (int i = 0; i < mListView.getCount(); i++) {
+                                mListView.setItemChecked(i, true);
+                            }
+                        }
+                    });
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                }
+            }
+        }.start();
     }
 
-    private void deselectAllItem() {
+        private void deselectAllItem() {
         mItem.clear();
     }
 
-    private File zipFolder(File zipFolder) {
-        File ZipFile = new File(zipFolder.getParent(), format("%s.zip", zipFolder.getName()));
-        try {
-            ZipOutputStream out = new ZipOutputStream(new FileOutputStream(ZipFile));
-            zipSubFolder(out, zipFolder, zipFolder.getPath().length());
-            out.close();
-            updateList(mCurrentList);
-            return ZipFile;
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            return null;
-        }
+    private void createFolder() {
+        LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        final View view = inflater.inflate(R.layout.dialog_create_folder, null, false);
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(this, R.style.MyDialogStyle);
+        builder.setTitle(R.string.create_folder_title);
+        builder.setView(view);
+
+        builder.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int id) {
+                //
+            }
+        });
+
+        builder.setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int id) {
+                dialog.cancel();
+            }
+        });
+
+        final AlertDialog dialog = builder.create();
+        dialog.show();
+
+        dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                EditText folderNameInput = (EditText) view.findViewById(R.id.folderName);
+                String folderName = folderNameInput.getText().toString().trim();
+                if (folderName.isEmpty()) {
+                    Toast.makeText(FilesListActivity.this, getString(R.string.folder_warning), Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                File newFolder = new File(mCurrentList, folderName);
+                if (!newFolder.exists()) {
+                    newFolder.mkdir();
+                }
+                updateList(newFolder.getParentFile());
+                dialog.dismiss();
+            }
+        });
     }
 
-    private void zipSubFolder(ZipOutputStream out, File folder, int basePathLength) throws IOException {
-        final int BUFFER = 2048;
-        File[] fileList = folder.listFiles();
-        BufferedInputStream origin;
-        for (File file : fileList) {
-            if (file.isDirectory()) {
-                zipSubFolder(out, file, basePathLength);
-            } else {
-                byte[] data = new byte[BUFFER];
-                String unmodifiedFilePath = file.getPath();
-                String relativePath = unmodifiedFilePath.substring(basePathLength + 1);
-                FileInputStream fi = new FileInputStream(unmodifiedFilePath);
-                origin = new BufferedInputStream(fi, BUFFER);
-                ZipEntry entry = new ZipEntry(relativePath);
-                entry.setTime(file.lastModified());
-                out.putNextEntry(entry);
-                int count;
-                while ((count = origin.read(data, 0, BUFFER)) != -1) {
-                    out.write(data, 0, count);
+    private void selectFolder() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this, R.style.MyDialogStyle);
+        builder.setTitle(mCurrentPath.getPath());
+        builder.setPositiveButton(R.string.directory_select_title, new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+                switch (mId) {
+                    case 1:
+                        copyFileItem();
+                        mMode.finish();
+                        openDir(mCurrentPath);
+                        break;
+                    case 2:
+                        moveFileItem();
+                        mMode.finish();
+                        openDir(mCurrentPath);
+                        break;
+                    default:
+                        break;
                 }
-                origin.close();
-                out.closeEntry();
+                dialog.dismiss();
+            }
+        });
+
+        builder.setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int id) {
+                dialog.cancel();
+                mMode.finish();
+            }
+        });
+
+        builder.setItems(mListDir, new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+                String fileName = mListDir[id];
+                mDirSelected = getDir(fileName);
+                if (mDirSelected.isDirectory()) {
+                    loadFileList(mDirSelected);
+                    selectFolder();
+                }
+            }
+        });
+        builder.show();
+    }
+
+    private void rename() {
+        LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        final View view = inflater.inflate(R.layout.dialog_rename, null, false);
+
+        final EditText fileFolderNameInput = (EditText) view.findViewById(R.id.fileFolderName);
+        fileFolderNameInput.setText(mItemName);
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(this, R.style.MyDialogStyle);
+        builder.setTitle(R.string.rename_title);
+        builder.setView(view);
+
+        builder.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int id) {
+                //
+            }
+        });
+
+        builder.setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int id) {
+                dialog.cancel();
+            }
+        });
+
+        final AlertDialog dialog = builder.create();
+        dialog.show();
+
+        dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String fileFolderName = fileFolderNameInput.getText().toString().trim();
+                if (fileFolderName.isEmpty()) {
+                    Toast.makeText(FilesListActivity.this, getString(R.string.rename_file_folder_warning), Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                File oldName = new File(mCurrentList, mItemName);
+                File newName = new File(mNewList, fileFolderName);
+                oldName.renameTo(newName);
+                updateList(newName.getParentFile());
+                dialog.dismiss();
+            }
+        });
+    }
+
+    private void loadFileList(File file) {
+        mCurrentPath = file;
+        List<String> r = new ArrayList<>();
+        if (file.exists()) {
+            if (!file.equals(mSdRootPath)) {
+                r.add(mStorageDir);
+            }
+            File[] list = file.listFiles();
+            ArrayList<File> fileList = new ArrayList<>(Arrays.asList(list));
+            Collections.sort(fileList);
+            for (File fileAdded : fileList) {
+                if (fileAdded.isDirectory()) {
+                    String fileName = fileAdded.getName();
+                    r.add(fileName);
+                }
             }
         }
+        mListDir = r.toArray(new String[]{});
     }
 
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == REQUEST_FILE_VIEW && resultCode == RESULT_OK) {
-            startActivity(Intent.createChooser(mViewIntent, "View using"));
-        }
-        if (requestCode == REQUEST_FILE_SEND && resultCode == RESULT_OK) {
-            startActivity(Intent.createChooser(mSendIntent, "Send using"));
+    private File getDir(String dirName) {
+        if (dirName.equals(mStorageDir)) {
+            return mCurrentPath.getParentFile();
+        } else {
+            return new File(mCurrentPath, dirName);
         }
     }
 
@@ -309,20 +485,25 @@ public class FilesListActivity extends AppCompatActivity {
         mAdapter.notifyDataSetChanged();
     }
 
-    private String getFileExt(String ext) {
-        return MimeTypeMap.getSingleton().getMimeTypeFromExtension(MimeTypeMap.getFileExtensionFromUrl(ext));
-    }
-
     private Uri getFileUri(File file) {
         try {
             return getUriForFile(this,
-                    getString(R.string.file_provider),
+                   getString(R.string.file_provider),
                     file);
         } catch (NullPointerException npe) {
             Toast.makeText(this, getString(R.string.zip_warning), Toast.LENGTH_LONG).show();
             npe.printStackTrace();
-            updateList(mNewList);
             return null;
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == REQUEST_FILE_VIEW && resultCode == RESULT_OK) {
+            startActivity(Intent.createChooser(mViewIntent, "View using"));
+        }
+        if (requestCode == REQUEST_FILE_SEND && resultCode == RESULT_OK) {
+            startActivity(Intent.createChooser(mSendIntent, "Send using"));
         }
     }
 
@@ -336,3 +517,4 @@ public class FilesListActivity extends AppCompatActivity {
         }
     }
 }
+

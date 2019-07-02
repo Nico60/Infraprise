@@ -10,19 +10,19 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import com.nico60.infraprise.Utils.FileUtils;
-import com.nico60.infraprise.Utils.ImageUtils;
+import com.nico60.infraprise.Utils.AppFileUtils;
+import com.nico60.infraprise.Utils.AppImageUtils;
 
 public class BtActivity extends AppCompatActivity {
 
     private static final int REQUEST_TAKE_PHOTO = 1;
 
+    private AppFileUtils mAppFileUtils;
+    private AppImageUtils mAppImageUtils;
     private EditText mAdrInput;
     private EditText mBtInput;
     private EditText mNroInput;
     private EditText mPmInput;
-    private FileUtils mFileUtils;
-    private ImageUtils mImageUtils;
     private String mAdrText;
     private String mBtText;
     private String mNroText;
@@ -34,8 +34,8 @@ public class BtActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_bt);
 
-        mFileUtils = new FileUtils(this);
-        mImageUtils = new ImageUtils(this);
+        mAppFileUtils = new AppFileUtils(this);
+        mAppImageUtils = new AppImageUtils(this);
 
         mAdrInput = findViewById(R.id.btAdrText);
         mBtInput = findViewById(R.id.btBtText);
@@ -56,9 +56,9 @@ public class BtActivity extends AppCompatActivity {
                         getString(R.string.nro_number) + " " + mNroText,
                         getString(R.string.pm_number) + " " + mPmText,
                         getString(R.string.bt_number) + " " + mBtText,
-                        getString(R.string.adresse) + " " + mAdrText};
+                        getString(R.string.adress) + " " + mAdrText};
                 if (isAnswered()) {
-                    mFileUtils.Save(mNroText, mPmText, mPoleType, mBtText, list);
+                    mAppFileUtils.save(mNroText, mPmText, mPoleType, mBtText, list);
                     finish();
                 } else {
                     warning();
@@ -74,7 +74,7 @@ public class BtActivity extends AppCompatActivity {
                 mNroText = mNroInput.getText().toString();
                 mPmText = mPmInput.getText().toString();
                 if (isAnswered()) {
-                    mImageUtils.dispatchTakePictureIntent(mNroText, mPmText, mPoleType, mBtText);
+                    mAppImageUtils.dispatchTakePictureIntent(mNroText, mPmText, mPoleType, mBtText);
                 } else {
                     warning();
                 }

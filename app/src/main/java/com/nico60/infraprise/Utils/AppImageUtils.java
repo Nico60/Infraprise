@@ -18,7 +18,7 @@ import static android.support.v4.content.FileProvider.getUriForFile;
 import static com.nico60.infraprise.MainActivity.isExternalStorageWritable;
 import static java.lang.String.format;
 
-public class ImageUtils {
+public class AppImageUtils {
 
     private static final int REQUEST_IMAGE_CAPTURE = 1;
 
@@ -28,7 +28,7 @@ public class ImageUtils {
     private String mPmNum;
     private String mPoleType;
 
-    public ImageUtils(Activity activity) {
+    public AppImageUtils(Activity activity) {
         this.activity = activity;
     }
 

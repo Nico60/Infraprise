@@ -10,13 +10,15 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import com.nico60.infraprise.Utils.FileUtils;
-import com.nico60.infraprise.Utils.ImageUtils;
+import com.nico60.infraprise.Utils.AppFileUtils;
+import com.nico60.infraprise.Utils.AppImageUtils;
 
 public class AeopActivity extends AppCompatActivity {
 
     private static final int REQUEST_TAKE_PHOTO = 1;
 
+    private AppFileUtils mAppFileUtils;
+    private AppImageUtils mAppImageUtils;
     private EditText mAdrInput;
     private EditText mAeopInput;
     private EditText mBtInput;
@@ -24,8 +26,6 @@ public class AeopActivity extends AppCompatActivity {
     private EditText mHtInput;
     private EditText mNroInput;
     private EditText mPmInput;
-    private FileUtils mFileUtils;
-    private ImageUtils mImageUtils;
     private String mAdrText;
     private String mAeopText;
     private String mBtText;
@@ -40,8 +40,8 @@ public class AeopActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_aeop);
 
-        mFileUtils = new FileUtils(this);
-        mImageUtils = new ImageUtils(this);
+        mAppFileUtils = new AppFileUtils(this);
+        mAppImageUtils = new AppImageUtils(this);
 
         mAdrInput = findViewById(R.id.aeopAdrText);
         mAeopInput = findViewById(R.id.aeopNumText);
@@ -71,9 +71,9 @@ public class AeopActivity extends AppCompatActivity {
                         getString(R.string.bt_number) + " " + mBtText,
                         getString(R.string.aeop_height_pole_to_plant, mHtText),
                         getString(R.string.aeop_distance_pole_to_road, mDrcText),
-                        getString(R.string.adresse) + " " + mAdrText};
+                        getString(R.string.adress) + " " + mAdrText};
                 if (isAnswered()) {
-                    mFileUtils.Save(mNroText, mPmText, mPoleType, mAeopText, list);
+                    mAppFileUtils.save(mNroText, mPmText, mPoleType, mAeopText, list);
                     finish();
                 } else {
                     warning();
@@ -89,7 +89,7 @@ public class AeopActivity extends AppCompatActivity {
                 mNroText = mNroInput.getText().toString();
                 mPmText = mPmInput.getText().toString();
                 if (isAnswered()) {
-                    mImageUtils.dispatchTakePictureIntent(mNroText, mPmText, mPoleType, mAeopText);
+                    mAppImageUtils.dispatchTakePictureIntent(mNroText, mPmText, mPoleType, mAeopText);
                 } else {
                     warning();
                 }

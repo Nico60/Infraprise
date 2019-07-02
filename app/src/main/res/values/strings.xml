@@ -14,11 +14,13 @@
     <string name="aeop_height_pole_to_plant">Height of the pole to plant : %s meters</string>
     <string name="aeop_distance_pole_to_road">Distance from the pole to the side of the roadway : %s meter(s)</string>
     <string name="aeop_distance_to_road">Distance from the roadway :</string>
-    <string name="adresse">Adresse :</string>
+    <string name="adress">Adress :</string>
     <string name="aeop_warning">Enter a NRO, PM and AEOP number</string>
     <string name="bt_warning">Enter a NRO, PM and BT number</string>
     <string name="ft_warning">Enter a NRO, PM and GSPOT number</string>
     <string name="zip_warning">Empty folder(s) not added in the email !</string>
+    <string name="folder_warning">Enter a folder name</string>
+    <string name="rename_file_folder_warning">Enter a new name</string>
     <string name="perm_warning">Write External Storage permission allows us to do store files. Please allow this permission in App Settings.</string>
     <string name="aeop_survey_action">AEOP POLE SURVEY</string>
     <string name="bt_survey_action">BT POLE SURVEY</string>
@@ -35,7 +37,13 @@
     <string name="send_file">Send</string>
     <string name="select_all_items">Select all</string>
     <string name="deselect_all_items">Deselect all</string>
-    <string name="file_saved">\u0020 saved</string>
+    <string name="new_folder_name">Create folder</string>
+    <string name="create_folder_title">Create new folder</string>
+    <string name="rename_title">Rename</string>
+    <string name="copy_title">Copy</string>
+    <string name="move_title">Move</string>
+    <string name="directory_select_title">Select directory</string>
+    <string name="file_text_saved">Text file %s created</string>
     <string name="picture_saved">Picture saved</string>
     <string name="item_selected">\u0020 Selection(s)</string>
 </resources>

@@ -10,20 +10,20 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import com.nico60.infraprise.Utils.FileUtils;
-import com.nico60.infraprise.Utils.ImageUtils;
+import com.nico60.infraprise.Utils.AppFileUtils;
+import com.nico60.infraprise.Utils.AppImageUtils;
 
 public class FtActivity extends AppCompatActivity {
 
     private static final int REQUEST_TAKE_PHOTO = 1;
 
+    private AppFileUtils mAppFileUtils;
+    private AppImageUtils mAppImageUtils;
     private EditText mAdrInput;
     private EditText mFtBeInput;
     private EditText mGftInput;
     private EditText mNroInput;
     private EditText mPmInput;
-    private FileUtils mFileUtils;
-    private ImageUtils mImageUtils;
     private String mAdrText;
     private String mFtBeText;
     private String mGftText;
@@ -36,8 +36,8 @@ public class FtActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_ft);
 
-        mFileUtils = new FileUtils(this);
-        mImageUtils = new ImageUtils(this);
+        mAppFileUtils = new AppFileUtils(this);
+        mAppImageUtils = new AppImageUtils(this);
 
         mAdrInput = findViewById(R.id.ftAdrText);
         mFtBeInput = findViewById(R.id.ftBeText);
@@ -61,9 +61,9 @@ public class FtActivity extends AppCompatActivity {
                         getString(R.string.pm_number) + " " + mPmText,
                         getString(R.string.pm_number) + " " + mGftText,
                         getString(R.string.ft_be_number) + " " + mFtBeText,
-                        getString(R.string.adresse) + " " + mAdrText};
+                        getString(R.string.adress) + " " + mAdrText};
                 if (isAnswered()) {
-                    mFileUtils.Save(mNroText, mPmText, mPoleType, mGftText, list);
+                    mAppFileUtils.save(mNroText, mPmText, mPoleType, mGftText, list);
                     finish();
                 } else {
                     warning();
@@ -79,7 +79,7 @@ public class FtActivity extends AppCompatActivity {
                 mNroText = mNroInput.getText().toString();
                 mPmText = mPmInput.getText().toString();
                 if (isAnswered()) {
-                    mImageUtils.dispatchTakePictureIntent(mNroText, mPmText, mPoleType, mGftText);
+                    mAppImageUtils.dispatchTakePictureIntent(mNroText, mPmText, mPoleType, mGftText);
                 } else {
                     warning();
                 }
