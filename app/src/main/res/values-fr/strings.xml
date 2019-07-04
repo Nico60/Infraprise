@@ -10,12 +10,15 @@
     <string name="aeop_height_pole_to_plant">Hauteur poteau à planter : %s mètres</string>
     <string name="aeop_distance_pole_to_road">Distance du poteau depuis la rive de chaussée : %s mètre(s)</string>
     <string name="aeop_distance_to_road">Distance de la rive de chaussée :</string>
-    <string name="adress">Adresse :</string>
+    <string name="address">Adresse :</string>
     <string name="aeop_warning">Saisir un numéro de NRO, PM et d\'AEOP</string>
     <string name="bt_warning">Saisir un numéro de NRO, PM et de BT</string>
     <string name="ft_warning">Saisir un numéro de NRO, PM et de GSPOT</string>
     <string name="zip_warning">Dossier(s) vide(s) non ajouté(s) à l\'email !</string>
     <string name="folder_warning">Entrer un nom de répertoire</string>
+    <string name="sheet_list_toast">Pas de fiche sauvegardée</string>
+    <string name="create_sheet_toast">Fiche sauvegardée</string>
+    <string name="update_sheet_toast">Fiche mise à jour</string>
     <string name="rename_file_folder_warning">Entrer un nouveau nom</string>
     <string name="perm_warning">La permission d\'écriture permet de stocker des fichiers. Veuillez autoriser cette permission dans les paramètres de l\'application.</string>
     <string name="aeop_survey_action">RELEVER POTEAU AEOP</string>
@@ -29,8 +32,10 @@
     <string name="title_activity_file_explorer">Explorateur de fichier</string>
     <string name="take_picture">Photo</string>
     <string name="open_file">Ouvrir</string>
-    <string name="delete_file">Effacer</string>
+    <string name="delete_file">Supprimer</string>
     <string name="send_file">Envoyer</string>
+    <string name="modify_file">Modifier</string>
+    <string name="create_file_text">Créer fichier texte</string>
     <string name="select_all_items">Tout sélectionner</string>
     <string name="deselect_all_items">Tout désélectionner</string>
     <string name="new_folder_name">Créer un dossier</string>
@@ -42,4 +47,7 @@
     <string name="file_text_saved">Fichier texte %s créé</string>
     <string name="picture_saved">Photo sauvegardée</string>
     <string name="item_selected">\u0020 Sélection(s)</string>
+    <string name="db_sheet_list">Liste fiche sauvegardée</string>
+    <string name="select_sheet">Sélectionner une fiche</string>
+    <string name="dialog_cancel">Annuler</string>
 </resources>

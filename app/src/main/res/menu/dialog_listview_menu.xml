@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/open_dialog_item"
+        android:title="@string/open_file" />
+    <item
+        android:id="@+id/modify_dialog_item"
+        android:title="@string/modify_file" />
+    <item
+        android:id="@+id/create_file_text_item"
+        android:title="@string/create_file_text" />
+    <item
+        android:id="@+id/delete_dialog_item"
+        android:title="@string/delete_file" />
+</menu>

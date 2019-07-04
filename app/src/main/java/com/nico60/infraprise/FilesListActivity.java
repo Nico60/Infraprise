@@ -309,7 +309,7 @@ public class FilesListActivity extends AppCompatActivity {
         }.start();
     }
 
-        private void deselectAllItem() {
+    private void deselectAllItem() {
         mItem.clear();
     }
 
