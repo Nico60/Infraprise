@@ -24,6 +24,18 @@
             app:popupTheme="@style/AppTheme.PopupOverlay"
             app:titleTextColor="@color/textColorPrimary" />
 
+        <TextView
+            android:id="@+id/dirTextView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:ellipsize="marquee"
+            android:scrollHorizontally="true"
+            android:singleLine="true"
+            android:textColor="@color/textColorPrimary"
+            android:textSize="16sp" />
+
+
     </android.support.design.widget.AppBarLayout>
 
     <ListView

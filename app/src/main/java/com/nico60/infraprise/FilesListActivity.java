@@ -19,6 +19,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.nico60.infraprise.Utils.AppFileUtils;
@@ -59,6 +60,7 @@ public class FilesListActivity extends AppCompatActivity {
     private String mItemName;
     private String mStorageDir = "..";
     private String[] mListDir;
+    private TextView mDirTextView;
     private Uri mZipUri;
 
     @Override
@@ -67,6 +69,10 @@ public class FilesListActivity extends AppCompatActivity {
         setContentView(R.layout.activity_files_list);
 
         Toolbar fileToolbar = findViewById(R.id.fileToolbar);
+
+        mDirTextView = findViewById(R.id.dirTextView);
+        mDirTextView.setSelected(true);
+        mDirTextView.setHorizontallyScrolling(true);
 
         mAppFileUtils = new AppFileUtils(this);
 
@@ -476,6 +482,7 @@ public class FilesListActivity extends AppCompatActivity {
 
     private void updateList(File file) {
         mArrayListItem.clear();
+        mDirTextView.setText(file.getPath());
         File[] list = file.listFiles();
         ArrayList<File> fileList = new ArrayList<>(Arrays.asList(list));
         Collections.sort(fileList);
