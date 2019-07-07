@@ -1,10 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#3C646B</color>
-    <color name="colorPrimaryDark">#315B61</color>
-    <color name="colorAccent">#314447</color>
+    <color name="colorPrimary">#B9B9B9</color>
+    <color name="colorPrimaryDark">#000000</color>
+    <color name="colorAccent">#000000</color>
     <color name="textColorPrimary">#000000</color>
-    <color name="colorActionModeBg">#38474E</color>
-    <color name="colorAppBackground">#516E77</color>
-    <color name="colorCardBackground">#42545C</color>
+    <color name="btnTextColor">#FFFFFF</color>
+    <color name="colorActionModeBg">#BEBEBE</color>
+    <color name="colorAppBackground">#FFFFFF</color>
+    <color name="colorCardBackground">#DBDBDB</color>
+    <color name="colorBtnBackground">#4285F4</color>
+    <color name="colorFabBackground">#FFA726</color>
 </resources>
