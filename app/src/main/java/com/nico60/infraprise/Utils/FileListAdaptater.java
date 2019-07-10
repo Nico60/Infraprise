@@ -14,20 +14,20 @@ import java.util.ArrayList;
 
 public class FileListAdaptater extends ArrayAdapter<ListItem> {
 
-    private ArrayList<ListItem> arrayListItem;
-    private Context context;
+    private ArrayList<ListItem> mArrayListItem;
+    private Context mContext;
 
     public FileListAdaptater(Context context, int resource, ArrayList<ListItem> items) {
         super(context, resource, items);
-        this.context = context;
-        this.arrayListItem = items;
+        mContext = context;
+        mArrayListItem = items;
     }
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        ListItem item = arrayListItem.get(position);
+        ListItem item = mArrayListItem.get(position);
         String itemText = item.getFileName();
-        LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        LayoutInflater inflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View view = inflater.inflate(R.layout.list_view_items, null);
         TextView textView = (TextView) view.findViewById(R.id.textListView);
         textView.setText(itemText);

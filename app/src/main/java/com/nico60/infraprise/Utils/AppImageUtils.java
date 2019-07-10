@@ -22,14 +22,14 @@ public class AppImageUtils {
 
     private static final int REQUEST_IMAGE_CAPTURE = 1;
 
-    private Activity activity;
+    private Activity mActivity;
     private String mFileName;
     private String mNroNum;
     private String mPmNum;
     private String mPoleType;
 
     public AppImageUtils(Activity activity) {
-        this.activity = activity;
+        mActivity = activity;
     }
 
     public void dispatchTakePictureIntent(String nro, String pm, String type, String fileName) {
@@ -39,20 +39,20 @@ public class AppImageUtils {
         mFileName = fileName;
         if (isExternalStorageWritable()) {
             Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-            if (takePictureIntent.resolveActivity(activity.getPackageManager()) != null) {
+            if (takePictureIntent.resolveActivity(mActivity.getPackageManager()) != null) {
                 File photoFile = null;
                 try {
                     photoFile = createImageFile();
                 } catch (IOException ex) {
-                    Toast.makeText(activity, "Exception: " + ex.toString(), Toast.LENGTH_LONG).show();
+                    Toast.makeText(mActivity, "Exception: " + ex.toString(), Toast.LENGTH_LONG).show();
                     ex.printStackTrace();
                 }
                 if (photoFile != null) {
-                    Uri photoURI = getUriForFile(activity,
-                            activity.getString(R.string.file_provider),
+                    Uri photoURI = getUriForFile(mActivity,
+                            mActivity.getString(R.string.file_provider),
                             photoFile);
                     takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
-                    activity.startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
+                    mActivity.startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
                 }
             }
         }
@@ -60,16 +60,16 @@ public class AppImageUtils {
 
     private File createImageFile() throws IOException {
         String timeStamp = new SimpleDateFormat("yyyyMMdd-HHmmss").format(new Date());
-        String imageFileName = activity.getString(R.string.nro) + mNroNum + "_" + activity.getString(R.string.pm) + mPmNum + "_" + mPoleType +
+        String imageFileName = mActivity.getString(R.string.nro) + mNroNum + "_" + mActivity.getString(R.string.pm) + mPmNum + "_" + mPoleType +
                 mFileName + "_" + format("%s.jpg", timeStamp);
         return new File(createDirectory(), imageFileName);
     }
 
     private File createDirectory() {
-        File rootDir = new File(Environment.getExternalStorageDirectory(), activity.getString(R.string.app_name));
-        File nroDir = new File(rootDir, activity.getString(R.string.nro) + mNroNum);
-        File pmDir = new File(nroDir, activity.getString(R.string.pm) + mPmNum);
-        File fileType = new File(pmDir, activity.getString(R.string.sheet, mPoleType));
+        File rootDir = new File(Environment.getExternalStorageDirectory(), mActivity.getString(R.string.app_name));
+        File nroDir = new File(rootDir, mActivity.getString(R.string.nro) + mNroNum);
+        File pmDir = new File(nroDir, mActivity.getString(R.string.pm) + mPmNum);
+        File fileType = new File(pmDir, mActivity.getString(R.string.sheet, mPoleType));
         File finalDir = new File(fileType, mPoleType + mFileName);
         if (!finalDir.exists()) {
             finalDir.mkdirs();

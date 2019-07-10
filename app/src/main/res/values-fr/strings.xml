@@ -20,7 +20,9 @@
     <string name="create_sheet_toast">Fiche sauvegardée</string>
     <string name="update_sheet_toast">Fiche mise à jour</string>
     <string name="rename_file_folder_warning">Entrer un nouveau nom</string>
-    <string name="perm_warning">La permission d\'écriture permet de stocker des fichiers. Veuillez autoriser cette permission dans les paramètres de l\'application.</string>
+    <string name="perm_write_warning">La permission d\'écriture permet de lire et de stocker des fichiers. Veuillez autoriser cette permission dans les paramètres de l\'application.</string>
+    <string name="perm_location_warning">La permission de géolocalisation permet de trouver la position géographique du poteau. Veuillez autoriser cette permission dans les paramètres de l\'application.</string>
+    <string name="pole_location_warning">L\'emplacement du poteau ne peut pas être établi. Essayez encore une fois.</string>
     <string name="aeop_survey_action">RELEVER POTEAU AEOP</string>
     <string name="bt_survey_action">RELEVER POTEAU BT</string>
     <string name="ft_survey_action">RELEVER POTEAU FT</string>
@@ -31,6 +33,7 @@
     <string name="title_activity_ft_survey">Relevé de poteau FT</string>
     <string name="title_activity_file_explorer">Explorateur de fichier</string>
     <string name="take_picture">Photo</string>
+    <string name="take_location">Obtenir\nlocalisation</string>
     <string name="open_file">Ouvrir</string>
     <string name="delete_file">Supprimer</string>
     <string name="send_file">Envoyer</string>
@@ -50,4 +53,15 @@
     <string name="db_sheet_list">Liste fiche sauvegardée</string>
     <string name="select_sheet">Sélectionner une fiche</string>
     <string name="dialog_cancel">Annuler</string>
+    <string name="pole_latitude">Latitude poteau :</string>
+    <string name="pole_longitude">Longitude poteau :</string>
+    <string name="spec_title">Caractéristique</string>
+    <string name="loc_title">Emplacement</string>
+    <string name="loc_provider_settings">Paramètres</string>
+    <string name="loc_provider_warning_title">ATTENTION</string>
+    <string name="loc_provider_warning_message">Le GPS de votre appareil est désactivé. Veuillez l\'activer dans les paramètres pour obtenir l\'emplacement du poteau. Appuyez de nouveau sur le bouton, après avoir activé la localisation</string>
+    <string name="loc_provider_info_title">INFORMATION</string>
+    <string name="loc_provider_info_message">Positionnez-vous à côté du poteau et appuyer sur OK pour obtenir sa localisation précise.</string>
+    <string name="loc_provider_info_checkbox">Ne plus afficher ce message</string>
+    <string name="loc_provider_info_search">Recherche emplacement&#8230;</string>
 </resources>

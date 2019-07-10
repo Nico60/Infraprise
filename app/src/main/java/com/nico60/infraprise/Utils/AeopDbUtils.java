@@ -11,13 +11,16 @@ public class AeopDbUtils {
     private String mHtNumber;
     private String mDrcNumber;
     private String mAdressName;
+    private String mLatLoc;
+    private String mLongLoc;
 
     public AeopDbUtils() {
         //
     }
 
     public AeopDbUtils(int id, String sheetName, String nroNumber, String pmNumber, String aeopNumber,
-                       String btNumber, String htNumber, String drcNumber, String adressName) {
+                       String btNumber, String htNumber, String drcNumber, String adressName,
+                       String latLoc, String longLoc) {
         this.id = id;
         this.mSheetName = sheetName;
         this.mNroNumber = nroNumber;
@@ -27,10 +30,13 @@ public class AeopDbUtils {
         this.mHtNumber = htNumber;
         this.mDrcNumber = drcNumber;
         this.mAdressName = adressName;
+        this.mLatLoc = latLoc;
+        this.mLongLoc = longLoc;
     }
 
     public AeopDbUtils(String sheetName, String nroNumber, String pmNumber, String aeopNumber,
-                       String btNumber, String htNumber, String drcNumber, String adressName) {
+                       String btNumber, String htNumber, String drcNumber, String adressName,
+                       String latLoc, String longLoc) {
         this.mSheetName = sheetName;
         this.mNroNumber = nroNumber;
         this.mPmNumber = pmNumber;
@@ -39,6 +45,8 @@ public class AeopDbUtils {
         this.mHtNumber = htNumber;
         this.mDrcNumber = drcNumber;
         this.mAdressName = adressName;
+        this.mLatLoc = latLoc;
+        this.mLongLoc = longLoc;
     }
 
     public int getID() {
@@ -111,5 +119,21 @@ public class AeopDbUtils {
 
     public void setAdressName(String adressName) {
         this.mAdressName = adressName;
+    }
+
+    public String getLatLoc() {
+        return this.mLatLoc;
+    }
+
+    public void setLatLoc(String latLoc) {
+        this.mLatLoc = latLoc;
+    }
+
+    public String getLongLoc() {
+        return this.mLongLoc;
+    }
+
+    public void setLongLoc(String longLoc) {
+        this.mLongLoc = longLoc;
     }
 }

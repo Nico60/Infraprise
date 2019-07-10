@@ -42,10 +42,12 @@
     <style name="MyDialogStyle" parent="Theme.AppCompat.Light.Dialog.Alert">
         <item name="android:buttonBarButtonStyle">@style/MyButtonsStyle</item>
         <item name="android:windowBackground">@color/colorAppBackground</item>
+        <item name="colorAccent">@color/colorBtnBackground</item>
     </style>
 
     <style name="MyButtonsStyle" parent="Widget.AppCompat.Button.ButtonBar.AlertDialog">
-        <item name="android:textColor">@color/colorCardBackground</item>
+        <item name="android:textColor">@color/colorBtnBackground</item>
+        <item name="android:textAllCaps">false</item>
     </style>
 
     <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />

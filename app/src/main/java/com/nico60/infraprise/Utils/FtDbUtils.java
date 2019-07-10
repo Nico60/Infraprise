@@ -9,12 +9,15 @@ public class FtDbUtils {
     private String mGftNumber;
     private String mFtBetNumber;
     private String mAdressName;
+    private String mLatLoc;
+    private String mLongLoc;
 
     public FtDbUtils() {
         //
     }
 
-    public FtDbUtils(int id, String sheetName, String nroNumber, String pmNumber, String gFtNumber, String ftBeNumber, String adressName) {
+    public FtDbUtils(int id, String sheetName, String nroNumber, String pmNumber, String gFtNumber,
+                     String ftBeNumber, String adressName, String latLoc, String longLoc) {
         this.id = id;
         this.mSheetName = sheetName;
         this.mNroNumber = nroNumber;
@@ -22,15 +25,20 @@ public class FtDbUtils {
         this.mGftNumber = gFtNumber;
         this.mFtBetNumber = ftBeNumber;
         this.mAdressName = adressName;
+        this.mLatLoc = latLoc;
+        this.mLongLoc = longLoc;
     }
 
-    public FtDbUtils(String sheetName, String nroNumber, String pmNumber, String gFtNumber, String ftBeNumber, String adressName) {
+    public FtDbUtils(String sheetName, String nroNumber, String pmNumber, String gFtNumber,
+                     String ftBeNumber, String adressName, String latLoc, String longLoc) {
         this.mSheetName = sheetName;
         this.mNroNumber = nroNumber;
         this.mPmNumber = pmNumber;
         this.mGftNumber = gFtNumber;
         this.mFtBetNumber = ftBeNumber;
         this.mAdressName = adressName;
+        this.mLatLoc = latLoc;
+        this.mLongLoc = longLoc;
     }
 
     public int getID() {
@@ -87,5 +95,21 @@ public class FtDbUtils {
 
     public void setAdressName(String adressName) {
         this.mAdressName = adressName;
+    }
+
+    public String getLatLoc() {
+        return this.mLatLoc;
+    }
+
+    public void setLatLoc(String latLoc) {
+        this.mLatLoc = latLoc;
+    }
+
+    public String getLongLoc() {
+        return this.mLongLoc;
+    }
+
+    public void setLongLoc(String longLoc) {
+        this.mLongLoc = longLoc;
     }
 }

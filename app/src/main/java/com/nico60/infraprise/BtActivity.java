@@ -3,6 +3,10 @@ package com.nico60.infraprise;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Intent;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
@@ -22,7 +26,9 @@ import com.nico60.infraprise.SQLite.BtDatabase;
 import com.nico60.infraprise.Utils.AppFileUtils;
 import com.nico60.infraprise.Utils.AppImageUtils;
 import com.nico60.infraprise.Utils.BtDbUtils;
+import com.nico60.infraprise.Utils.PoleLocationUtils;
 
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -39,10 +45,18 @@ public class BtActivity extends AppCompatActivity implements PopupMenu.OnMenuIte
     private Dialog mDialog;
     private EditText mAdrInput;
     private EditText mBtInput;
+    private EditText mLatInput;
+    private EditText mLongInput;
     private EditText mNroInput;
     private EditText mPmInput;
+    private LocationListener mLocationListener;
+    private LocationManager mLocationManager;
+    private MainActivity mMainActivity;
+    private PoleLocationUtils mPoleLocationUtils;
     private String mAdrText;
     private String mBtText;
+    private String mLatText;
+    private String mLongText;
     private String mNroText;
     private String mPmText;
     private String mPoleType = "BT";
@@ -58,13 +72,42 @@ public class BtActivity extends AppCompatActivity implements PopupMenu.OnMenuIte
         mAppImageUtils = new AppImageUtils(this);
         mBtDb = new BtDatabase(this);
         mDialog = new Dialog(this, R.style.MyDialogStyle);
+        mMainActivity = new MainActivity();
+        mPoleLocationUtils = new PoleLocationUtils(this);
 
         mAdrInput = findViewById(R.id.btAdrText);
         mBtInput = findViewById(R.id.btBtText);
+        mLatInput = findViewById(R.id.btLatText);
+        mLongInput = findViewById(R.id.btLongText);
         mNroInput = findViewById(R.id.btNroText);
         mPmInput = findViewById(R.id.btPmText);
 
         Toolbar btToolbar = findViewById(R.id.btToolbar);
+
+        mLocationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
+
+        mLocationListener = new LocationListener() {
+            @Override
+            public void onLocationChanged(Location location) {
+                mPoleLocationUtils.setPoleLatitude(location.getLatitude());
+                mPoleLocationUtils.setPoleLongitude(location.getLongitude());
+            }
+
+            @Override
+            public void onStatusChanged(String str, int i, Bundle bundle) {
+                //
+            }
+
+            @Override
+            public void onProviderEnabled(String str) {
+                mPoleLocationUtils.setProviderStatus(true);
+            }
+
+            @Override
+            public void onProviderDisabled(String str) {
+                mPoleLocationUtils.setProviderStatus(false);
+            }
+        };
 
         FloatingActionButton btFab = findViewById(R.id.btFab);
         btFab.setOnClickListener(new View.OnClickListener() {
@@ -72,6 +115,8 @@ public class BtActivity extends AppCompatActivity implements PopupMenu.OnMenuIte
             public void onClick(View view) {
                 mAdrText = mAdrInput.getText().toString();
                 mBtText = mBtInput.getText().toString();
+                mLatText = mLatInput.getText().toString();
+                mLongText = mLongInput.getText().toString();
                 mNroText = mNroInput.getText().toString();
                 mPmText = mPmInput.getText().toString();
 
@@ -80,12 +125,12 @@ public class BtActivity extends AppCompatActivity implements PopupMenu.OnMenuIte
 
                 if (isAnswered() && isUpdating) {
                     mBtDb.updateBtDbUtils(new BtDbUtils(btSheetName, mNroText, mPmText,
-                            mBtText, mAdrText), mOldBtSheetName);
+                            mBtText, mAdrText, mLatText, mLongText), mOldBtSheetName);
                     updateSheetToast();
                     finish();
                 } else if (isAnswered()) {
                     mBtDb.addBtDbUtils(new BtDbUtils(btSheetName, mNroText, mPmText,
-                            mBtText, mAdrText));
+                            mBtText, mAdrText, mLatText, mLongText));
                     createSheetToast();
                     finish();
                 } else {
@@ -109,7 +154,82 @@ public class BtActivity extends AppCompatActivity implements PopupMenu.OnMenuIte
             }
         });
 
+        Button btLocButton = findViewById(R.id.btLocButton);
+        btLocButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (mPoleLocationUtils.getProviderStatus()) {
+                    mPoleLocationUtils.showProviderInfoDialog();
+                } else {
+                    mPoleLocationUtils.showProviderDisabledDialog();
+                }
+            }
+        });
+
         setSupportActionBar(btToolbar);
+        updatePoleLocation();
+    }
+
+    private void updatePoleLocation() {
+        if (mMainActivity.checkLocationPermission(this)) {
+            mLocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 500,
+                    1, mLocationListener);
+        } else {
+            mMainActivity.requestPermission(this);
+        }
+    }
+
+    public static class mBtProviderTask extends AsyncTask<Integer, Integer, String> {
+
+        WeakReference<BtActivity> btActivityWeakReference;
+
+        public mBtProviderTask(BtActivity activity) {
+            btActivityWeakReference = new WeakReference<>(activity);
+        }
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            btActivityWeakReference.get().mPoleLocationUtils.showProviderSearchDialog();
+        }
+
+        @Override
+        protected String doInBackground(Integer... params) {
+            for (int i = 0; i < params[0]; i++) {
+                if (btActivityWeakReference.get().mPoleLocationUtils.getPoleLatitude() == null &&
+                        btActivityWeakReference.get().mPoleLocationUtils.getPoleLongitude() == null) {
+                    try {
+                        Thread.sleep(1000);
+                        publishProgress(i);
+                    } catch (InterruptedException ex) {
+                        btActivityWeakReference.get().mPoleLocationUtils.mProgressDialog.cancel();
+                        ex.printStackTrace();
+                    }
+                }
+            }
+            return "Task finished.";
+        }
+
+        @Override
+        protected void onProgressUpdate(Integer... values) {
+            super.onProgressUpdate(values);
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            btActivityWeakReference.get().mPoleLocationUtils.mProgressDialog.dismiss();
+            if (btActivityWeakReference.get().mPoleLocationUtils.getPoleLatitude() != null &&
+                    btActivityWeakReference.get().mPoleLocationUtils.getPoleLongitude() != null) {
+                btActivityWeakReference.get().mLatInput.setText(
+                        btActivityWeakReference.get().mPoleLocationUtils.getPoleLatitude());
+                btActivityWeakReference.get().mLongInput.setText(
+                        btActivityWeakReference.get().mPoleLocationUtils.getPoleLongitude());
+                btActivityWeakReference.get().mAdrInput.setText(
+                        btActivityWeakReference.get().mPoleLocationUtils.getAddress());
+            } else {
+                Toast.makeText(btActivityWeakReference.get(), R.string.pole_location_warning, Toast.LENGTH_LONG).show();
+            }
+        }
     }
 
     @Override
@@ -209,6 +329,8 @@ public class BtActivity extends AppCompatActivity implements PopupMenu.OnMenuIte
         String data = "\n" + getString(R.string.nro_number) + " " + bt.getNroNumber() + "\n\n" +
                 getString(R.string.pm_number) + " " + bt.getPmNumber() + "\n\n" +
                 getString(R.string.bt_number) + " " + bt.getBtNumber() + "\n\n" +
+                getString(R.string.pole_latitude) + " " + bt.getLatLoc() + "\n\n" +
+                getString(R.string.pole_longitude) + " " + bt.getLongLoc() + "\n\n" +
                 getString(R.string.address) + " " + bt.getAdressName() + "\n";
         showMessage(bt.getSheetName(), data);
     }
@@ -227,6 +349,8 @@ public class BtActivity extends AppCompatActivity implements PopupMenu.OnMenuIte
         mNroInput.setText(bt.getNroNumber());
         mPmInput.setText(bt.getPmNumber());
         mBtInput.setText(bt.getBtNumber());
+        mLatInput.setText(bt.getLatLoc());
+        mLongInput.setText(bt.getLongLoc());
         mAdrInput.setText(bt.getAdressName());
         mOldBtSheetName = btSheet;
         isUpdating = true;
@@ -238,6 +362,8 @@ public class BtActivity extends AppCompatActivity implements PopupMenu.OnMenuIte
                 getString(R.string.nro_number) + " " + bt.getNroNumber(),
                 getString(R.string.pm_number) + " " + bt.getPmNumber(),
                 getString(R.string.bt_number) + " " + bt.getBtNumber(),
+                getString(R.string.pole_latitude) + " " + bt.getLatLoc(),
+                getString(R.string.pole_longitude) + " " + bt.getLongLoc(),
                 getString(R.string.address) + " " + bt.getAdressName()};
         mAppFileUtils.save(bt.getNroNumber(), bt.getPmNumber(), mPoleType, bt.getBtNumber(), list);
     }

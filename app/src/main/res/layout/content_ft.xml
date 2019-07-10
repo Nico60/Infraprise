@@ -43,11 +43,12 @@
                 android:id="@+id/ftNroTextView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginStart="4dp"
+                android:layout_marginTop="16dp"
                 android:text="@string/nro_number"
                 android:textColor="@color/textColorPrimary"
-                android:textStyle="bold"
                 app:layout_constraintStart_toStartOf="@+id/ftGuideline"
-                app:layout_constraintTop_toTopOf="@+id/ftGuideline2" />
+                app:layout_constraintTop_toBottomOf="@+id/ftSpecTextView" />
 
             <EditText
                 android:id="@+id/ftNroText"
@@ -65,10 +66,10 @@
                 android:id="@+id/ftPmTextView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginStart="4dp"
                 android:layout_marginTop="36dp"
                 android:text="@string/pm_number"
                 android:textColor="@color/textColorPrimary"
-                android:textStyle="bold"
                 app:layout_constraintStart_toStartOf="@+id/ftGuideline"
                 app:layout_constraintTop_toBottomOf="@+id/ftNroTextView" />
 
@@ -88,10 +89,10 @@
                 android:id="@+id/ftBeTextView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginStart="4dp"
                 android:layout_marginTop="36dp"
                 android:text="@string/ft_be_number"
                 android:textColor="@color/textColorPrimary"
-                android:textStyle="bold"
                 app:layout_constraintStart_toStartOf="@+id/ftGuideline"
                 app:layout_constraintTop_toBottomOf="@+id/ftPmTextView" />
 
@@ -111,10 +112,10 @@
                 android:id="@+id/gFtTextView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginStart="4dp"
                 android:layout_marginTop="36dp"
                 android:text="@string/gspot_number"
                 android:textColor="@color/textColorPrimary"
-                android:textStyle="bold"
                 app:layout_constraintStart_toStartOf="@+id/ftGuideline"
                 app:layout_constraintTop_toBottomOf="@+id/ftBeTextView" />
 
@@ -134,14 +135,14 @@
                 android:id="@+id/ftAdrTextView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginStart="4dp"
                 android:layout_marginTop="36dp"
                 android:layout_marginBottom="24dp"
                 android:text="@string/address"
                 android:textColor="@color/textColorPrimary"
-                android:textStyle="bold"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="@+id/ftGuideline"
-                app:layout_constraintTop_toBottomOf="@+id/gFtTextView" />
+                app:layout_constraintTop_toBottomOf="@+id/ftLongTextView" />
 
             <EditText
                 android:id="@+id/ftAdrText"
@@ -153,8 +154,77 @@
                 android:inputType="textPostalAddress"
                 android:textColor="@color/textColorPrimary"
                 app:layout_constraintBaseline_toBaselineOf="@+id/ftAdrTextView"
-                app:layout_constraintEnd_toEndOf="@+id/gFtText"
+                app:layout_constraintEnd_toEndOf="@+id/ftLongText"
                 app:layout_constraintStart_toEndOf="@+id/ftAdrTextView" />
+
+            <TextView
+                android:id="@+id/ftLatTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="4dp"
+                android:layout_marginTop="16dp"
+                android:text="@string/pole_latitude"
+                android:textColor="@color/textColorPrimary"
+                app:layout_constraintStart_toStartOf="@+id/ftGuideline"
+                app:layout_constraintTop_toBottomOf="@+id/ftLocTextView" />
+
+            <EditText
+                android:id="@+id/ftLatText"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:backgroundTint="@color/textColorPrimary"
+                android:ems="10"
+                android:inputType="numberDecimal"
+                android:textColor="@color/textColorPrimary"
+                app:layout_constraintBaseline_toBaselineOf="@id/ftLatTextView"
+                app:layout_constraintEnd_toEndOf="@+id/gFtText"
+                app:layout_constraintStart_toStartOf="@+id/gFtText" />
+
+            <TextView
+                android:id="@+id/ftLongTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="4dp"
+                android:layout_marginTop="36dp"
+                android:text="@string/pole_longitude"
+                android:textColor="@color/textColorPrimary"
+                app:layout_constraintStart_toStartOf="@+id/ftGuideline"
+                app:layout_constraintTop_toBottomOf="@+id/ftLatTextView" />
+
+            <EditText
+                android:id="@+id/ftLongText"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:backgroundTint="@color/textColorPrimary"
+                android:ems="10"
+                android:inputType="numberDecimal"
+                android:textColor="@color/textColorPrimary"
+                app:layout_constraintBaseline_toBaselineOf="@id/ftLongTextView"
+                app:layout_constraintEnd_toEndOf="@id/ftLatText"
+                app:layout_constraintStart_toStartOf="@id/ftLatText" />
+
+            <TextView
+                android:id="@+id/ftSpecTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/spec_title"
+                android:textColor="@color/textColorPrimary"
+                android:textSize="18sp"
+                android:textStyle="bold|italic"
+                app:layout_constraintStart_toStartOf="@+id/ftGuideline"
+                app:layout_constraintTop_toTopOf="@+id/ftGuideline2" />
+
+            <TextView
+                android:id="@+id/ftLocTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="24dp"
+                android:text="@string/loc_title"
+                android:textColor="@color/textColorPrimary"
+                android:textSize="18sp"
+                android:textStyle="bold|italic"
+                app:layout_constraintStart_toStartOf="@+id/ftGuideline"
+                app:layout_constraintTop_toBottomOf="@+id/gFtTextView" />
 
         </android.support.constraint.ConstraintLayout>
 
@@ -165,7 +235,24 @@
             android:layout_marginTop="32dp"
             android:background="@drawable/btn_shape"
             android:text="@string/take_picture"
+            android:textColor="@color/btnTextColor"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.75"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/ftConstraintLayout" />
+
+        <Button
+            android:id="@+id/ftLocButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="32dp"
+            android:background="@drawable/btn_shape"
+            android:paddingStart="4dp"
+            android:paddingEnd="4dp"
+            android:text="@string/take_location"
+            android:textColor="@color/btnTextColor"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.25"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/ftConstraintLayout" />
 

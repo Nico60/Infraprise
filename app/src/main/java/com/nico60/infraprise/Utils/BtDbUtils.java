@@ -8,26 +8,34 @@ public class BtDbUtils {
     private String mPmNumber;
     private String mBtNumber;
     private String mAdressName;
+    private String mLatLoc;
+    private String mLongLoc;
 
     public BtDbUtils() {
         //
     }
 
-    public BtDbUtils(int id, String sheetName, String nroNumber, String pmNumber, String btNumber, String adressName) {
+    public BtDbUtils(int id, String sheetName, String nroNumber, String pmNumber, String btNumber,
+                     String adressName, String latLoc, String longLoc) {
         this.id = id;
         this.mSheetName = sheetName;
         this.mNroNumber = nroNumber;
         this.mPmNumber = pmNumber;
         this.mBtNumber = btNumber;
         this.mAdressName = adressName;
+        this.mLatLoc = latLoc;
+        this.mLongLoc = longLoc;
     }
 
-    public BtDbUtils(String sheetName, String nroNumber, String pmNumber, String btNumber, String adressName) {
+    public BtDbUtils(String sheetName, String nroNumber, String pmNumber, String btNumber,
+                     String adressName, String latLoc, String longLoc) {
         this.mSheetName = sheetName;
         this.mNroNumber = nroNumber;
         this.mPmNumber = pmNumber;
         this.mBtNumber = btNumber;
         this.mAdressName = adressName;
+        this.mLatLoc = latLoc;
+        this.mLongLoc = longLoc;
     }
 
     public int getID() {
@@ -76,5 +84,21 @@ public class BtDbUtils {
 
     public void setAdressName(String adressName) {
         this.mAdressName = adressName;
+    }
+
+    public String getLatLoc() {
+        return this.mLatLoc;
+    }
+
+    public void setLatLoc(String latLoc) {
+        this.mLatLoc = latLoc;
+    }
+
+    public String getLongLoc() {
+        return this.mLongLoc;
+    }
+
+    public void setLongLoc(String longLoc) {
+        this.mLongLoc = longLoc;
     }
 }

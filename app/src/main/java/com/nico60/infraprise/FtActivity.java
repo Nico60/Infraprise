@@ -3,6 +3,10 @@ package com.nico60.infraprise;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Intent;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
@@ -22,7 +26,9 @@ import com.nico60.infraprise.SQLite.FtDatabase;
 import com.nico60.infraprise.Utils.AppFileUtils;
 import com.nico60.infraprise.Utils.AppImageUtils;
 import com.nico60.infraprise.Utils.FtDbUtils;
+import com.nico60.infraprise.Utils.PoleLocationUtils;
 
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -35,16 +41,24 @@ public class FtActivity extends AppCompatActivity implements PopupMenu.OnMenuIte
     private AppFileUtils mAppFileUtils;
     private AppImageUtils mAppImageUtils;
     private boolean isUpdating = false;
-    private FtDatabase mFtDb;
     private Dialog mDialog;
     private EditText mAdrInput;
     private EditText mFtBeInput;
     private EditText mGftInput;
+    private EditText mLatInput;
+    private EditText mLongInput;
     private EditText mNroInput;
     private EditText mPmInput;
+    private FtDatabase mFtDb;
+    private LocationListener mLocationListener;
+    private LocationManager mLocationManager;
+    private MainActivity mMainActivity;
+    private PoleLocationUtils mPoleLocationUtils;
     private String mAdrText;
     private String mFtBeText;
     private String mGftText;
+    private String mLatText;
+    private String mLongText;
     private String mNroText;
     private String mPmText;
     private String mPoleType = "FT";
@@ -60,14 +74,43 @@ public class FtActivity extends AppCompatActivity implements PopupMenu.OnMenuIte
         mAppImageUtils = new AppImageUtils(this);
         mFtDb = new FtDatabase(this);
         mDialog = new Dialog(this, R.style.MyDialogStyle);
+        mMainActivity = new MainActivity();
+        mPoleLocationUtils = new PoleLocationUtils(this);
 
         mAdrInput = findViewById(R.id.ftAdrText);
         mFtBeInput = findViewById(R.id.ftBeText);
+        mLatInput = findViewById(R.id.ftLatText);
+        mLongInput = findViewById(R.id.ftLongText);
         mGftInput = findViewById(R.id.gFtText);
         mNroInput = findViewById(R.id.ftNroText);
         mPmInput = findViewById(R.id.ftPmText);
 
         Toolbar ftToolbar = findViewById(R.id.ftToolbar);
+
+        mLocationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
+
+        mLocationListener = new LocationListener() {
+            @Override
+            public void onLocationChanged(Location location) {
+                mPoleLocationUtils.setPoleLatitude(location.getLatitude());
+                mPoleLocationUtils.setPoleLongitude(location.getLongitude());
+            }
+
+            @Override
+            public void onStatusChanged(String str, int i, Bundle bundle) {
+                //
+            }
+
+            @Override
+            public void onProviderEnabled(String str) {
+                mPoleLocationUtils.setProviderStatus(true);
+            }
+
+            @Override
+            public void onProviderDisabled(String str) {
+                mPoleLocationUtils.setProviderStatus(false);
+            }
+        };
 
         FloatingActionButton ftFab = findViewById(R.id.ftFab);
         ftFab.setOnClickListener(new View.OnClickListener() {
@@ -76,6 +119,8 @@ public class FtActivity extends AppCompatActivity implements PopupMenu.OnMenuIte
                 mAdrText = mAdrInput.getText().toString();
                 mFtBeText = mFtBeInput.getText().toString();
                 mGftText = mGftInput.getText().toString();
+                mLatText = mLatInput.getText().toString();
+                mLongText = mLongInput.getText().toString();
                 mNroText = mNroInput.getText().toString();
                 mPmText = mPmInput.getText().toString();
 
@@ -84,12 +129,12 @@ public class FtActivity extends AppCompatActivity implements PopupMenu.OnMenuIte
 
                 if (isAnswered() && isUpdating) {
                     mFtDb.updateFtDbUtils(new FtDbUtils(ftSheetName, mNroText, mPmText,
-                            mGftText, mFtBeText, mAdrText), mOldFtSheetName);
+                            mGftText, mFtBeText, mAdrText, mLatText, mLongText), mOldFtSheetName);
                     updateSheetToast();
                     finish();
                 } else if (isAnswered()) {
                     mFtDb.addFtDbUtils(new FtDbUtils(ftSheetName, mNroText, mPmText,
-                            mGftText, mFtBeText, mAdrText));
+                            mGftText, mFtBeText, mAdrText, mLatText, mLongText));
                     createSheetToast();
                     finish();
                 } else {
@@ -113,7 +158,83 @@ public class FtActivity extends AppCompatActivity implements PopupMenu.OnMenuIte
             }
         });
 
+        Button ftLocButton = findViewById(R.id.ftLocButton);
+        ftLocButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (mPoleLocationUtils.getProviderStatus()) {
+                    mPoleLocationUtils.showProviderInfoDialog();
+                } else {
+                    mPoleLocationUtils.showProviderDisabledDialog();
+                }
+            }
+        });
+
         setSupportActionBar(ftToolbar);
+        updatePoleLocation();
+    }
+
+    private void updatePoleLocation() {
+        if (mMainActivity.checkLocationPermission(this)) {
+            mLocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 500,
+                    1, mLocationListener);
+        } else {
+            mMainActivity.requestPermission(this);
+        }
+    }
+
+    public static class mFtProviderTask extends AsyncTask<Integer, Integer, String> {
+
+        WeakReference<FtActivity> ftActivityWeakReference;
+
+        public mFtProviderTask(FtActivity activity) {
+            ftActivityWeakReference = new WeakReference<>(activity);
+        }
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            ftActivityWeakReference.get().mPoleLocationUtils.showProviderSearchDialog();
+        }
+
+        @Override
+        protected String doInBackground(Integer... params) {
+            for (int i = 0; i < params[0]; i++) {
+                if (ftActivityWeakReference.get().mPoleLocationUtils.getPoleLatitude() == null &&
+                        ftActivityWeakReference.get().mPoleLocationUtils.getPoleLongitude() == null) {
+                    try {
+                        Thread.sleep(1000);
+                        publishProgress(i);
+                    } catch (InterruptedException ex) {
+                        ftActivityWeakReference.get().mPoleLocationUtils.mProgressDialog.cancel();
+                        ex.printStackTrace();
+                    }
+                }
+            }
+            return "Task finished.";
+        }
+
+        @Override
+        protected void onProgressUpdate(Integer... values) {
+            super.onProgressUpdate(values);
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            super.onPostExecute(result);
+            ftActivityWeakReference.get().mPoleLocationUtils.mProgressDialog.dismiss();
+            if (ftActivityWeakReference.get().mPoleLocationUtils.getPoleLatitude() != null &&
+                    ftActivityWeakReference.get().mPoleLocationUtils.getPoleLongitude() != null) {
+                ftActivityWeakReference.get().mLatInput.setText(
+                        ftActivityWeakReference.get().mPoleLocationUtils.getPoleLatitude());
+                ftActivityWeakReference.get().mLongInput.setText(
+                        ftActivityWeakReference.get().mPoleLocationUtils.getPoleLongitude());
+                ftActivityWeakReference.get().mAdrInput.setText(
+                        ftActivityWeakReference.get().mPoleLocationUtils.getAddress());
+            } else {
+                Toast.makeText(ftActivityWeakReference.get(), R.string.pole_location_warning, Toast.LENGTH_LONG).show();
+            }
+        }
     }
 
     @Override
@@ -214,6 +335,8 @@ public class FtActivity extends AppCompatActivity implements PopupMenu.OnMenuIte
                 getString(R.string.pm_number) + " " + ft.getPmNumber() + "\n\n" +
                 getString(R.string.ft_be_number) + " " + ft.getFtBeNumber() + "\n\n" +
                 getString(R.string.gspot_number) + " " + ft.getGftNumber() + "\n\n" +
+                getString(R.string.pole_latitude) + " " + ft.getLatLoc() + "\n\n" +
+                getString(R.string.pole_longitude) + " " + ft.getLongLoc() + "\n\n" +
                 getString(R.string.address) + " " + ft.getAdressName() + "\n";
         showMessage(ft.getSheetName(), data);
     }
@@ -233,6 +356,8 @@ public class FtActivity extends AppCompatActivity implements PopupMenu.OnMenuIte
         mPmInput.setText(ft.getPmNumber());
         mGftInput.setText(ft.getGftNumber());
         mFtBeInput.setText(ft.getFtBeNumber());
+        mLatInput.setText(ft.getLatLoc());
+        mLongInput.setText(ft.getLongLoc());
         mAdrInput.setText(ft.getAdressName());
         mOldFtSheetName = ftSheet;
         isUpdating = true;
@@ -245,6 +370,8 @@ public class FtActivity extends AppCompatActivity implements PopupMenu.OnMenuIte
                 getString(R.string.pm_number) + " " + ft.getPmNumber(),
                 getString(R.string.ft_be_number) + " " + ft.getFtBeNumber(),
                 getString(R.string.gspot_number) + " " + ft.getGftNumber(),
+                getString(R.string.pole_latitude) + " " + ft.getLatLoc(),
+                getString(R.string.pole_longitude) + " " + ft.getLongLoc(),
                 getString(R.string.address) + " " + ft.getAdressName()};
         mAppFileUtils.save(ft.getNroNumber(), ft.getPmNumber(), mPoleType, ft.getGftNumber(), list);
     }

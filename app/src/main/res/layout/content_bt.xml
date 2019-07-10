@@ -43,11 +43,12 @@
                 android:id="@+id/btNroTextView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginStart="4dp"
+                android:layout_marginTop="16dp"
                 android:text="@string/nro_number"
                 android:textColor="@color/textColorPrimary"
-                android:textStyle="bold"
                 app:layout_constraintStart_toStartOf="@+id/btGuideline"
-                app:layout_constraintTop_toTopOf="@+id/btGuideline2" />
+                app:layout_constraintTop_toBottomOf="@+id/btSpecTextView" />
 
             <EditText
                 android:id="@+id/btNroText"
@@ -65,10 +66,10 @@
                 android:id="@+id/btPmTextView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginStart="4dp"
                 android:layout_marginTop="36dp"
                 android:text="@string/pm_number"
                 android:textColor="@color/textColorPrimary"
-                android:textStyle="bold"
                 app:layout_constraintStart_toStartOf="@+id/btGuideline"
                 app:layout_constraintTop_toBottomOf="@+id/btNroTextView" />
 
@@ -88,10 +89,10 @@
                 android:id="@+id/btBtTextView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginStart="4dp"
                 android:layout_marginTop="36dp"
                 android:text="@string/bt_number"
                 android:textColor="@color/textColorPrimary"
-                android:textStyle="bold"
                 app:layout_constraintStart_toStartOf="@+id/btGuideline"
                 app:layout_constraintTop_toBottomOf="@+id/btPmTextView" />
 
@@ -111,14 +112,14 @@
                 android:id="@+id/btAdrTextView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginStart="4dp"
                 android:layout_marginTop="36dp"
                 android:layout_marginBottom="24dp"
                 android:text="@string/address"
                 android:textColor="@color/textColorPrimary"
-                android:textStyle="bold"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="@+id/btGuideline"
-                app:layout_constraintTop_toBottomOf="@+id/btBtTextView" />
+                app:layout_constraintTop_toBottomOf="@+id/btLongTextView" />
 
             <EditText
                 android:id="@+id/btAdrText"
@@ -130,8 +131,78 @@
                 android:inputType="textPostalAddress"
                 android:textColor="@color/textColorPrimary"
                 app:layout_constraintBaseline_toBaselineOf="@+id/btAdrTextView"
-                app:layout_constraintEnd_toEndOf="@+id/btBtText"
+                app:layout_constraintEnd_toEndOf="@+id/btLongText"
                 app:layout_constraintStart_toEndOf="@+id/btAdrTextView" />
+
+            <TextView
+                android:id="@+id/btLatTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="4dp"
+                android:layout_marginTop="16dp"
+                android:text="@string/pole_latitude"
+                android:textColor="@color/textColorPrimary"
+                app:layout_constraintStart_toStartOf="@+id/btGuideline"
+                app:layout_constraintTop_toBottomOf="@+id/btLocTextView" />
+
+            <EditText
+                android:id="@+id/btLatText"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:backgroundTint="@color/textColorPrimary"
+                android:ems="10"
+                android:inputType="numberDecimal"
+                android:textColor="@color/textColorPrimary"
+                app:layout_constraintBaseline_toBaselineOf="@id/btLatTextView"
+                app:layout_constraintEnd_toEndOf="@+id/btBtText"
+                app:layout_constraintStart_toStartOf="@+id/btBtText" />
+
+            <TextView
+                android:id="@+id/btLongTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="4dp"
+                android:layout_marginTop="36dp"
+                android:text="@string/pole_longitude"
+                android:textColor="@color/textColorPrimary"
+                app:layout_constraintStart_toStartOf="@+id/btGuideline"
+                app:layout_constraintTop_toBottomOf="@+id/btLatTextView" />
+
+            <EditText
+                android:id="@+id/btLongText"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:backgroundTint="@color/textColorPrimary"
+                android:ems="10"
+                android:inputType="numberDecimal"
+                android:textColor="@color/textColorPrimary"
+                app:layout_constraintBaseline_toBaselineOf="@id/btLongTextView"
+                app:layout_constraintEnd_toEndOf="@id/btLatText"
+                app:layout_constraintStart_toStartOf="@id/btLatText" />
+
+            <TextView
+                android:id="@+id/btSpecTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/spec_title"
+                android:textColor="@color/textColorPrimary"
+                android:textSize="18sp"
+                android:textStyle="bold|italic"
+                app:layout_constraintStart_toStartOf="@+id/btGuideline"
+                app:layout_constraintTop_toTopOf="@+id/btGuideline2" />
+
+            <TextView
+                android:id="@+id/btLocTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="24dp"
+                android:text="@string/loc_title"
+                android:textColor="@color/textColorPrimary"
+                android:textSize="18sp"
+                android:textStyle="bold|italic"
+                app:layout_constraintStart_toStartOf="@+id/btGuideline"
+                app:layout_constraintTop_toBottomOf="@+id/btBtTextView" />
+
 
         </android.support.constraint.ConstraintLayout>
 
@@ -142,7 +213,24 @@
             android:layout_marginTop="32dp"
             android:background="@drawable/btn_shape"
             android:text="@string/take_picture"
+            android:textColor="@color/btnTextColor"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.75"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/btConstraintLayout" />
+
+        <Button
+            android:id="@+id/btLocButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="32dp"
+            android:background="@drawable/btn_shape"
+            android:paddingStart="4dp"
+            android:paddingEnd="4dp"
+            android:text="@string/take_location"
+            android:textColor="@color/btnTextColor"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.25"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/btConstraintLayout" />
 

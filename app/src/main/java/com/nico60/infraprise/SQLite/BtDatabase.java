@@ -22,6 +22,8 @@ public class BtDatabase extends SQLiteOpenHelper {
     private static final String KEY_PM = "pmNumber";
     private static final String KEY_BTN = "btNumber";
     private static final String KEY_ADRESS = "adressName";
+    private static final String KEY_LATLOC = "latLoc";
+    private static final String KEY_LONGLOC = "longLoc";
 
     public BtDatabase(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -31,7 +33,8 @@ public class BtDatabase extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase db) {
         String CREATE_BT_TABLE = "CREATE TABLE " + TABLE_BT + "("
                 + KEY_ID + " INTEGER PRIMARY KEY," + KEY_SHEET_NAME + " TEXT," + KEY_NRO + " TEXT,"
-                + KEY_PM + " TEXT," + KEY_BTN + " TEXT," + KEY_ADRESS + " TEXT" + ")";
+                + KEY_PM + " TEXT," + KEY_BTN + " TEXT," + KEY_ADRESS + " TEXT," + KEY_LATLOC + " TEXT,"
+                + KEY_LONGLOC + " TEXT" + ")";
         db.execSQL(CREATE_BT_TABLE);
     }
 
@@ -50,6 +53,8 @@ public class BtDatabase extends SQLiteOpenHelper {
         values.put(KEY_PM, btDbUtils.getPmNumber());
         values.put(KEY_BTN, btDbUtils.getBtNumber());
         values.put(KEY_ADRESS, btDbUtils.getAdressName());
+        values.put(KEY_LATLOC, btDbUtils.getLatLoc());
+        values.put(KEY_LONGLOC, btDbUtils.getLongLoc());
 
         db.insert(TABLE_BT, null, values);
         db.close();
@@ -59,7 +64,7 @@ public class BtDatabase extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getReadableDatabase();
 
         Cursor cursor = db.query(TABLE_BT, new String[] {KEY_ID, KEY_SHEET_NAME,
-                        KEY_NRO, KEY_PM, KEY_BTN, KEY_ADRESS}, KEY_SHEET_NAME + " = ?",
+                        KEY_NRO, KEY_PM, KEY_BTN, KEY_ADRESS, KEY_LATLOC, KEY_LONGLOC}, KEY_SHEET_NAME + " = ?",
                 new String[] {str}, null, null, null, null);
         if (cursor != null) {
             cursor.moveToFirst();
@@ -68,7 +73,8 @@ public class BtDatabase extends SQLiteOpenHelper {
         BtDbUtils btDbUtils = new BtDbUtils(Integer.parseInt(cursor.getString(0)),
                 cursor.getString(1), cursor.getString(2),
                 cursor.getString(3), cursor.getString(4),
-                cursor.getString(5));
+                cursor.getString(5), cursor.getString(6),
+                cursor.getString(7));
         cursor.close();
 
         return btDbUtils;
@@ -90,6 +96,8 @@ public class BtDatabase extends SQLiteOpenHelper {
                 btDbUtils.setPmNumber(cursor.getString(3));
                 btDbUtils.setBtNumber(cursor.getString(4));
                 btDbUtils.setAdressName(cursor.getString(5));
+                btDbUtils.setLatLoc(cursor.getString(6));
+                btDbUtils.setLongLoc(cursor.getString(7));
                 btDbUtilsList.add(btDbUtils);
             } while (cursor.moveToNext());
         }
@@ -107,6 +115,8 @@ public class BtDatabase extends SQLiteOpenHelper {
         values.put(KEY_PM, btDbUtils.getPmNumber());
         values.put(KEY_BTN, btDbUtils.getBtNumber());
         values.put(KEY_ADRESS, btDbUtils.getAdressName());
+        values.put(KEY_LATLOC, btDbUtils.getLatLoc());
+        values.put(KEY_LONGLOC, btDbUtils.getLongLoc());
 
         db.update(TABLE_BT, values, KEY_SHEET_NAME + " = ?",
                 new String[] {str});

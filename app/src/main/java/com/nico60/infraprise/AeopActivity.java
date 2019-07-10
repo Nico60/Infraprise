@@ -3,6 +3,10 @@ package com.nico60.infraprise;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Intent;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
@@ -22,33 +26,43 @@ import com.nico60.infraprise.SQLite.AeopDatabase;
 import com.nico60.infraprise.Utils.AeopDbUtils;
 import com.nico60.infraprise.Utils.AppFileUtils;
 import com.nico60.infraprise.Utils.AppImageUtils;
+import com.nico60.infraprise.Utils.PoleLocationUtils;
 
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-public class AeopActivity extends AppCompatActivity  implements PopupMenu.OnMenuItemClickListener{
+public class AeopActivity extends AppCompatActivity  implements PopupMenu.OnMenuItemClickListener {
 
     private static final int REQUEST_TAKE_PHOTO = 1;
 
+    private AeopDatabase mAeopDb;
     private AppFileUtils mAppFileUtils;
     private AppImageUtils mAppImageUtils;
     private boolean isUpdating = false;
-    private AeopDatabase mAeopDb;
     private Dialog mDialog;
     private EditText mAdrInput;
     private EditText mAeopInput;
     private EditText mBtInput;
     private EditText mDrcInput;
     private EditText mHtInput;
+    private EditText mLatInput;
+    private EditText mLongInput;
     private EditText mNroInput;
     private EditText mPmInput;
+    private LocationListener mLocationListener;
+    private LocationManager mLocationManager;
+    private MainActivity mMainActivity;
+    private PoleLocationUtils mPoleLocationUtils;
     private String mAdrText;
     private String mAeopText;
     private String mBtText;
     private String mDrcText;
     private String mHtText;
+    private String mLatText;
+    private String mLongText;
     private String mNroText;
     private String mPmText;
     private String mPoleType = "AEOP";
@@ -64,16 +78,45 @@ public class AeopActivity extends AppCompatActivity  implements PopupMenu.OnMenu
         mAppImageUtils = new AppImageUtils(this);
         mAeopDb = new AeopDatabase(this);
         mDialog = new Dialog(this, R.style.MyDialogStyle);
+        mMainActivity = new MainActivity();
+        mPoleLocationUtils = new PoleLocationUtils(this);
 
         mAdrInput = findViewById(R.id.aeopAdrText);
         mAeopInput = findViewById(R.id.aeopNumText);
         mBtInput = findViewById(R.id.aeopBtText);
         mDrcInput = findViewById(R.id.aeopDrcText);
         mHtInput = findViewById(R.id.aeopHtText);
+        mLatInput = findViewById(R.id.aeopLatText);
+        mLongInput = findViewById(R.id.aeopLongText);
         mNroInput = findViewById(R.id.aeopNroText);
         mPmInput = findViewById(R.id.aeopPmText);
 
         Toolbar aeopToolbar = findViewById(R.id.aeopToolbar);
+
+        mLocationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
+
+        mLocationListener = new LocationListener() {
+            @Override
+            public void onLocationChanged(Location location) {
+                mPoleLocationUtils.setPoleLatitude(location.getLatitude());
+                mPoleLocationUtils.setPoleLongitude(location.getLongitude());
+            }
+
+            @Override
+            public void onStatusChanged(String str, int i, Bundle bundle) {
+                //
+            }
+
+            @Override
+            public void onProviderEnabled(String str) {
+                mPoleLocationUtils.setProviderStatus(true);
+            }
+
+            @Override
+            public void onProviderDisabled(String str) {
+                mPoleLocationUtils.setProviderStatus(false);
+            }
+        };
 
         FloatingActionButton aeopFab = findViewById(R.id.aeopFab);
         aeopFab.setOnClickListener(new View.OnClickListener() {
@@ -84,6 +127,8 @@ public class AeopActivity extends AppCompatActivity  implements PopupMenu.OnMenu
                 mBtText = mBtInput.getText().toString();
                 mDrcText = mDrcInput.getText().toString();
                 mHtText = mHtInput.getText().toString();
+                mLatText = mLatInput.getText().toString();
+                mLongText = mLongInput.getText().toString();
                 mNroText = mNroInput.getText().toString();
                 mPmText = mPmInput.getText().toString();
 
@@ -92,12 +137,13 @@ public class AeopActivity extends AppCompatActivity  implements PopupMenu.OnMenu
 
                 if (isAnswered() && isUpdating) {
                     mAeopDb.updateAeopDbUtils(new AeopDbUtils(aeopSheetName, mNroText, mPmText,
-                            mAeopText, mBtText, mHtText, mDrcText, mAdrText), mOldAeopSheetName);
+                            mAeopText, mBtText, mHtText, mDrcText, mAdrText, mLatText, mLongText),
+                            mOldAeopSheetName);
                     updateSheetToast();
                     finish();
                 } else if (isAnswered()) {
                     mAeopDb.addAeopDbUtils(new AeopDbUtils(aeopSheetName, mNroText, mPmText,
-                            mAeopText, mBtText, mHtText, mDrcText, mAdrText));
+                            mAeopText, mBtText, mHtText, mDrcText, mAdrText, mLatText, mLongText));
                     createSheetToast();
                     finish();
                 } else {
@@ -121,7 +167,83 @@ public class AeopActivity extends AppCompatActivity  implements PopupMenu.OnMenu
             }
         });
 
+        Button aeopLocButton = findViewById(R.id.aeopLocButton);
+        aeopLocButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (mPoleLocationUtils.getProviderStatus()) {
+                    mPoleLocationUtils.showProviderInfoDialog();
+                } else {
+                    mPoleLocationUtils.showProviderDisabledDialog();
+                }
+            }
+        });
+
         setSupportActionBar(aeopToolbar);
+        updatePoleLocation();
+    }
+
+    private void updatePoleLocation() {
+        if (mMainActivity.checkLocationPermission(this)) {
+            mLocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1000,
+                    0, mLocationListener);
+        } else {
+            mMainActivity.requestPermission(this);
+        }
+    }
+
+    public static class mAeopProviderTask extends AsyncTask<Integer, Integer, String> {
+
+        WeakReference<AeopActivity> aeopActivityWeakReference;
+
+        public mAeopProviderTask(AeopActivity activity) {
+            aeopActivityWeakReference = new WeakReference<>(activity);
+        }
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            aeopActivityWeakReference.get().mPoleLocationUtils.showProviderSearchDialog();
+        }
+
+        @Override
+        protected String doInBackground(Integer... params) {
+            for (int i = 0; i < params[0]; i++) {
+                if (aeopActivityWeakReference.get().mPoleLocationUtils.getPoleLatitude() == null &&
+                        aeopActivityWeakReference.get().mPoleLocationUtils.getPoleLongitude() == null) {
+                    try {
+                        Thread.sleep(1000);
+                        publishProgress(i);
+                    } catch (InterruptedException ex) {
+                        aeopActivityWeakReference.get().mPoleLocationUtils.mProgressDialog.cancel();
+                        ex.printStackTrace();
+                    }
+                }
+            }
+            return "Task finished.";
+        }
+
+        @Override
+        protected void onProgressUpdate(Integer... values) {
+            super.onProgressUpdate(values);
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            super.onPostExecute(result);
+            aeopActivityWeakReference.get().mPoleLocationUtils.mProgressDialog.dismiss();
+            if (aeopActivityWeakReference.get().mPoleLocationUtils.getPoleLatitude() != null &&
+                    aeopActivityWeakReference.get().mPoleLocationUtils.getPoleLongitude() != null) {
+                aeopActivityWeakReference.get().mLatInput.setText(
+                        aeopActivityWeakReference.get().mPoleLocationUtils.getPoleLatitude());
+                aeopActivityWeakReference.get().mLongInput.setText(
+                        aeopActivityWeakReference.get().mPoleLocationUtils.getPoleLongitude());
+                aeopActivityWeakReference.get().mAdrInput.setText(
+                        aeopActivityWeakReference.get().mPoleLocationUtils.getAddress());
+            } else {
+                Toast.makeText(aeopActivityWeakReference.get(), R.string.pole_location_warning, Toast.LENGTH_LONG).show();
+            }
+        }
     }
 
     @Override
@@ -224,6 +346,8 @@ public class AeopActivity extends AppCompatActivity  implements PopupMenu.OnMenu
                 getString(R.string.bt_number) + " " + aeop.getBtNumber() + "\n\n" +
                 getString(R.string.aeop_height_pole_to_plant, aeop.getHtNumber()) + "\n\n" +
                 getString(R.string.aeop_distance_pole_to_road, aeop.getDrcNumber()) + "\n\n" +
+                getString(R.string.pole_latitude) + " " + aeop.getLatLoc() + "\n\n" +
+                getString(R.string.pole_longitude) + " " + aeop.getLongLoc() + "\n\n" +
                 getString(R.string.address) + " " + aeop.getAdressName() + "\n";
         showMessage(aeop.getSheetName(), data);
     }
@@ -245,6 +369,8 @@ public class AeopActivity extends AppCompatActivity  implements PopupMenu.OnMenu
         mBtInput.setText(aeop.getBtNumber());
         mHtInput.setText(aeop.getHtNumber());
         mDrcInput.setText(aeop.getDrcNumber());
+        mLatInput.setText(aeop.getLatLoc());
+        mLongInput.setText(aeop.getLongLoc());
         mAdrInput.setText(aeop.getAdressName());
         mOldAeopSheetName = aeopSheet;
         isUpdating = true;
@@ -259,6 +385,8 @@ public class AeopActivity extends AppCompatActivity  implements PopupMenu.OnMenu
                 getString(R.string.bt_number) + " " + aeop.getBtNumber(),
                 getString(R.string.aeop_height_pole_to_plant, aeop.getHtNumber()),
                 getString(R.string.aeop_distance_pole_to_road, aeop.getDrcNumber()),
+                getString(R.string.pole_latitude) + " " + aeop.getLatLoc(),
+                getString(R.string.pole_longitude) + " " + aeop.getLongLoc(),
                 getString(R.string.address) + " " + aeop.getAdressName()};
         mAppFileUtils.save(aeop.getNroNumber(), aeop.getPmNumber(), mPoleType, aeop.getAeopNumber(), list);
     }

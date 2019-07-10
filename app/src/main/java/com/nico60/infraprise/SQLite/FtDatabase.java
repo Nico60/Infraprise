@@ -23,6 +23,8 @@ public class FtDatabase extends SQLiteOpenHelper {
     private static final String KEY_GFTN = "gFtNumber";
     private static final String KEY_FTBEN = "ftBeNumber";
     private static final String KEY_ADRESS = "adressName";
+    private static final String KEY_LATLOC = "latLoc";
+    private static final String KEY_LONGLOC = "longLoc";
 
     public FtDatabase(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -32,8 +34,8 @@ public class FtDatabase extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase db) {
         String CREATE_BT_TABLE = "CREATE TABLE " + TABLE_FT + "("
                 + KEY_ID + " INTEGER PRIMARY KEY," + KEY_SHEET_NAME + " TEXT," + KEY_NRO + " TEXT,"
-                + KEY_PM + " TEXT," + KEY_GFTN + " TEXT," + KEY_FTBEN + " TEXT,"
-                + KEY_ADRESS + " TEXT" + ")";
+                + KEY_PM + " TEXT," + KEY_GFTN + " TEXT," + KEY_FTBEN + " TEXT," + KEY_ADRESS + " TEXT,"
+                + KEY_LATLOC + " TEXT," + KEY_LONGLOC + " TEXT" + ")";
         db.execSQL(CREATE_BT_TABLE);
     }
 
@@ -53,6 +55,8 @@ public class FtDatabase extends SQLiteOpenHelper {
         values.put(KEY_GFTN, ftDbUtils.getGftNumber());
         values.put(KEY_FTBEN, ftDbUtils.getFtBeNumber());
         values.put(KEY_ADRESS, ftDbUtils.getAdressName());
+        values.put(KEY_LATLOC, ftDbUtils.getLatLoc());
+        values.put(KEY_LONGLOC, ftDbUtils.getLongLoc());
 
         db.insert(TABLE_FT, null, values);
         db.close();
@@ -62,7 +66,7 @@ public class FtDatabase extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getReadableDatabase();
 
         Cursor cursor = db.query(TABLE_FT, new String[] {KEY_ID, KEY_SHEET_NAME,
-                        KEY_NRO, KEY_PM, KEY_GFTN, KEY_FTBEN, KEY_ADRESS}, KEY_SHEET_NAME + " = ?",
+                        KEY_NRO, KEY_PM, KEY_GFTN, KEY_FTBEN, KEY_ADRESS, KEY_LATLOC, KEY_LONGLOC}, KEY_SHEET_NAME + " = ?",
                 new String[] {str}, null, null, null, null);
         if (cursor != null) {
             cursor.moveToFirst();
@@ -71,7 +75,8 @@ public class FtDatabase extends SQLiteOpenHelper {
         FtDbUtils ftDbUtils = new FtDbUtils(Integer.parseInt(cursor.getString(0)),
                 cursor.getString(1), cursor.getString(2),
                 cursor.getString(3), cursor.getString(4),
-                cursor.getString(5), cursor.getString(6));
+                cursor.getString(5), cursor.getString(6),
+                cursor.getString(7), cursor.getString(8));
         cursor.close();
 
         return ftDbUtils;
@@ -94,6 +99,8 @@ public class FtDatabase extends SQLiteOpenHelper {
                 ftDbUtils.setGftNumber(cursor.getString(4));
                 ftDbUtils.setFtBeNumber(cursor.getString(5));
                 ftDbUtils.setAdressName(cursor.getString(6));
+                ftDbUtils.setLatLoc(cursor.getString(7));
+                ftDbUtils.setLongLoc(cursor.getString(8));
                 ftDbUtilsList.add(ftDbUtils);
             } while (cursor.moveToNext());
         }
@@ -112,6 +119,8 @@ public class FtDatabase extends SQLiteOpenHelper {
         values.put(KEY_GFTN, ftDbUtils.getGftNumber());
         values.put(KEY_FTBEN, ftDbUtils.getFtBeNumber());
         values.put(KEY_ADRESS, ftDbUtils.getAdressName());
+        values.put(KEY_LATLOC, ftDbUtils.getLatLoc());
+        values.put(KEY_LONGLOC, ftDbUtils.getLongLoc());
 
         db.update(TABLE_FT, values, KEY_SHEET_NAME + " = ?",
                 new String[] {str});

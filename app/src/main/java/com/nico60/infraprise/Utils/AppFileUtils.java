@@ -22,14 +22,14 @@ import static java.lang.String.format;
 
 public class AppFileUtils {
 
-    private Activity activity;
+    private Activity mActivity;
     private String mFileName;
     private String mNroNum;
     private String mPmNum;
     private String mPoleType;
 
     public AppFileUtils(Activity activity) {
-        this.activity = activity;
+        mActivity = activity;
     }
 
     public void copy(File file, File path) {
@@ -70,8 +70,8 @@ public class AppFileUtils {
         mPoleType = type;
         mFileName = fileName;
         if (isExternalStorageWritable()) {
-            File file = new File(createDirectory(), activity.getString(R.string.nro) + mNroNum + "_" +
-                    activity.getString(R.string.pm) + mPmNum + "_" + mPoleType + format("%s.txt", mFileName));
+            File file = new File(createDirectory(), mActivity.getString(R.string.nro) + mNroNum + "_" +
+                    mActivity.getString(R.string.pm) + mPmNum + "_" + mPoleType + format("%s.txt", mFileName));
             try {
                 FileOutputStream out = new FileOutputStream(file);
                 for (String listToAdd : list) {
@@ -80,20 +80,20 @@ public class AppFileUtils {
                     out.write(("\n").getBytes());
                 }
                 out.close();
-                Toast.makeText(activity, activity.getString(R.string.file_text_saved,
+                Toast.makeText(mActivity, mActivity.getString(R.string.file_text_saved,
                         type + fileName), Toast.LENGTH_SHORT).show();
             } catch (Throwable t) {
-                Toast.makeText(activity, "Exception: " + t.toString(), Toast.LENGTH_LONG).show();
+                Toast.makeText(mActivity, "Exception: " + t.toString(), Toast.LENGTH_LONG).show();
                 t.printStackTrace();
             }
         }
     }
 
     private File createDirectory() {
-        File rootDir = new File(Environment.getExternalStorageDirectory(), activity.getString(R.string.app_name));
-        File nroDir = new File(rootDir, activity.getString(R.string.nro) + mNroNum);
-        File pmDir = new File(nroDir, activity.getString(R.string.pm) + mPmNum);
-        File fileType = new File(pmDir, activity.getString(R.string.sheet, mPoleType));
+        File rootDir = new File(Environment.getExternalStorageDirectory(), mActivity.getString(R.string.app_name));
+        File nroDir = new File(rootDir, mActivity.getString(R.string.nro) + mNroNum);
+        File pmDir = new File(nroDir, mActivity.getString(R.string.pm) + mPmNum);
+        File fileType = new File(pmDir, mActivity.getString(R.string.sheet, mPoleType));
         File finalDir = new File(fileType, mPoleType + mFileName);
         if (!finalDir.exists()) {
             finalDir.mkdirs();
