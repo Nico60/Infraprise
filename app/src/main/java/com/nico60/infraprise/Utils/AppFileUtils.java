@@ -15,6 +15,7 @@ import java.io.IOException;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
+import org.apache.commons.io.FileExistsException;
 import org.apache.commons.io.FileUtils;
 
 import static com.nico60.infraprise.MainActivity.isExternalStorageWritable;
@@ -39,6 +40,8 @@ public class AppFileUtils {
             } else {
                 FileUtils.copyFileToDirectory(file, path);
             }
+        } catch (NullPointerException e) {
+            e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -47,6 +50,10 @@ public class AppFileUtils {
     public void move(File file, File path) {
         try {
             FileUtils.moveToDirectory(file, path, false);
+        } catch (NullPointerException e) {
+            e.printStackTrace();
+        } catch (FileExistsException e) {
+            e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -55,11 +62,18 @@ public class AppFileUtils {
     public void delete(File file) {
         try {
             if (file.isDirectory()) {
-                FileUtils.deleteDirectory(file);
-            } else {
-                FileUtils.forceDelete(file);
+                String[] child = file.list();
+                for (String del : child) {
+                    File temp = new File(file, del);
+                    if (temp.isDirectory()) {
+                        delete(temp);
+                    } else {
+                        temp.delete();
+                    }
+                }
             }
-        } catch (IOException e) {
+            file.delete();
+        } catch (NullPointerException e) {
             e.printStackTrace();
         }
     }
