@@ -1,7 +1,8 @@
 package com.nico60.infraprise;
 
 import android.app.AlertDialog;
-import android.app.Dialog;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.location.Location;
 import android.location.LocationListener;
@@ -11,6 +12,7 @@ import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -38,11 +40,11 @@ public class BtActivity extends AppCompatActivity implements PopupMenu.OnMenuIte
 
     private static final int REQUEST_TAKE_PHOTO = 1;
 
+    private AlertDialog mDialog;
     private AppFileUtils mAppFileUtils;
     private AppImageUtils mAppImageUtils;
     private boolean isUpdating = false;
     private BtDatabase mBtDb;
-    private Dialog mDialog;
     private EditText mAdrInput;
     private EditText mBtInput;
     private EditText mLatInput;
@@ -71,9 +73,10 @@ public class BtActivity extends AppCompatActivity implements PopupMenu.OnMenuIte
         mAppFileUtils = new AppFileUtils(this);
         mAppImageUtils = new AppImageUtils(this);
         mBtDb = new BtDatabase(this);
-        mDialog = new Dialog(this, R.style.MyDialogStyle);
         mMainActivity = new MainActivity();
         mPoleLocationUtils = new PoleLocationUtils(this);
+        AlertDialog.Builder builder = new AlertDialog.Builder(this, R.style.MyDialogStyle);
+        mDialog = builder.create();
 
         mAdrInput = findViewById(R.id.btAdrText);
         mBtInput = findViewById(R.id.btBtText);
@@ -255,7 +258,9 @@ public class BtActivity extends AppCompatActivity implements PopupMenu.OnMenuIte
     }
 
     private void showBtList() {
-        mDialog.setContentView(R.layout.dialog_listview);
+        LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        final View view = inflater.inflate(R.layout.dialog_listview, null, false);
+        mDialog.setView(view);
         mDialog.setTitle(R.string.select_sheet);
 
         List<BtDbUtils> btDatabaseList = mBtDb.getAllBtDbUtils();
@@ -269,16 +274,15 @@ public class BtActivity extends AppCompatActivity implements PopupMenu.OnMenuIte
         ArrayList<String> strList = new ArrayList<>(Arrays.asList(btList));
         Collections.sort(strList);
 
-        ListView dialogListView = (ListView) mDialog.findViewById(R.id.dialog_list_view);
+        ListView dialogListView = (ListView) view.findViewById(R.id.dialog_list_view);
         final ArrayAdapter<String> arrayAdapter
                 = new ArrayAdapter<>(this, R.layout.list_view_items, R.id.textListView, strList);
         dialogListView.setAdapter(arrayAdapter);
 
-        Button btnDialog = (Button) mDialog.findViewById(R.id.btn_dialog);
-        btnDialog.setOnClickListener(new View.OnClickListener() {
+        mDialog.setButton(AlertDialog.BUTTON_NEGATIVE, getString(android.R.string.cancel), new DialogInterface.OnClickListener() {
             @Override
-            public void onClick(View v) {
-                mDialog.cancel();
+            public void onClick(DialogInterface dialog, int id) {
+                dialog.cancel();
             }
         });
 

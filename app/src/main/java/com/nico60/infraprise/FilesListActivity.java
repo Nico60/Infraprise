@@ -17,6 +17,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -30,7 +31,6 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.List;
 
 import static android.support.v4.content.FileProvider.getUriForFile;
 
@@ -40,7 +40,10 @@ public class FilesListActivity extends AppCompatActivity {
     private static final int REQUEST_FILE_SEND = 2;
 
     private ActionMode mMode;
+    private AppFileUtils mAppFileUtils;
+    private ArrayAdapter<String> mDialogArrayAdapter;
     private ArrayList<ListItem> mArrayListItem;
+    private ArrayList<String> mDialogArrayList;
     private ArrayList<String> mItem;
     private ArrayList<Uri> mZipUriList;
     private File mCurrentList;
@@ -51,7 +54,6 @@ public class FilesListActivity extends AppCompatActivity {
     private File mOldDir;
     private File mRootDir;
     private FileListAdaptater mAdapter;
-    private AppFileUtils mAppFileUtils;
     private int mId;
     private Intent mSendIntent;
     private Intent mViewIntent;
@@ -59,7 +61,6 @@ public class FilesListActivity extends AppCompatActivity {
     private String mExtType;
     private String mItemName;
     private String mStorageDir = "..";
-    private String[] mListDir;
     private TextView mDirTextView;
     private Uri mZipUri;
 
@@ -79,10 +80,13 @@ public class FilesListActivity extends AppCompatActivity {
         mSdRootPath = Environment.getExternalStorageDirectory();
 
         mArrayListItem = new ArrayList<>();
+        mDialogArrayList = new ArrayList<>();
         mItem = new ArrayList<>();
         mZipUriList = new ArrayList<>();
 
         mAdapter = new FileListAdaptater(this, R.layout.list_view_items, mArrayListItem);
+        mDialogArrayAdapter = new ArrayAdapter<>(this, R.layout.list_view_items,
+                R.id.textListView, mDialogArrayList);
 
         mListView = findViewById(R.id.files_listview);
         mListView.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE_MODAL);
@@ -364,9 +368,16 @@ public class FilesListActivity extends AppCompatActivity {
     }
 
     private void selectFolder() {
+        LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        final View view = inflater.inflate(R.layout.dialog_listview, null, false);
+
         AlertDialog.Builder builder = new AlertDialog.Builder(this, R.style.MyDialogStyle);
-        builder.setTitle(mCurrentPath.getPath());
-        builder.setPositiveButton(R.string.directory_select_title, new DialogInterface.OnClickListener() {
+        builder.setView(view);
+        final AlertDialog dialog = builder.create();
+        dialog.setTitle(mCurrentPath.getPath());
+
+        dialog.setButton(AlertDialog.BUTTON_POSITIVE, getString(R.string.directory_select_title),
+                new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
                 switch (mId) {
                     case 1:
@@ -386,7 +397,8 @@ public class FilesListActivity extends AppCompatActivity {
             }
         });
 
-        builder.setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
+        dialog.setButton(AlertDialog.BUTTON_NEGATIVE, getString(android.R.string.cancel),
+                new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int id) {
                 dialog.cancel();
@@ -394,17 +406,21 @@ public class FilesListActivity extends AppCompatActivity {
             }
         });
 
-        builder.setItems(mListDir, new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int id) {
-                String fileName = mListDir[id];
+        dialog.show();
+
+        ListView dialogListView = (ListView) view.findViewById(R.id.dialog_list_view);
+        dialogListView.setAdapter(mDialogArrayAdapter);
+        dialogListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                String fileName = mDialogArrayAdapter.getItem(position);
                 mDirSelected = getDir(fileName);
                 if (mDirSelected.isDirectory()) {
                     loadFileList(mDirSelected);
-                    selectFolder();
                 }
             }
+
         });
-        builder.show();
     }
 
     private void rename() {
@@ -454,10 +470,10 @@ public class FilesListActivity extends AppCompatActivity {
 
     private void loadFileList(File file) {
         mCurrentPath = file;
-        List<String> r = new ArrayList<>();
+        mDialogArrayList.clear();
         if (file.exists()) {
             if (!file.equals(mSdRootPath)) {
-                r.add(mStorageDir);
+                mDialogArrayList.add(mStorageDir);
             }
             File[] list = file.listFiles();
             ArrayList<File> fileList = new ArrayList<>(Arrays.asList(list));
@@ -465,11 +481,11 @@ public class FilesListActivity extends AppCompatActivity {
             for (File fileAdded : fileList) {
                 if (fileAdded.isDirectory()) {
                     String fileName = fileAdded.getName();
-                    r.add(fileName);
+                    mDialogArrayList.add(fileName);
                 }
             }
         }
-        mListDir = r.toArray(new String[]{});
+        mDialogArrayAdapter.notifyDataSetChanged();
     }
 
     private File getDir(String dirName) {
@@ -524,4 +540,3 @@ public class FilesListActivity extends AppCompatActivity {
         }
     }
 }
-
