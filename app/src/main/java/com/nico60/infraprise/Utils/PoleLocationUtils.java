@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.location.Address;
 import android.location.Geocoder;
+import android.location.Location;
 import android.provider.Settings;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -42,7 +43,7 @@ public class PoleLocationUtils {
         if (mPoleLatitude == 0.0) {
             return null;
         } else {
-            return String.valueOf(mPoleLatitude);
+            return convertLatitude(mPoleLatitude);
         }
     }
 
@@ -54,7 +55,7 @@ public class PoleLocationUtils {
         if (mPoleLongitude == 0.0) {
             return null;
         } else {
-            return String.valueOf(mPoleLongitude);
+            return convertLongitude(mPoleLongitude);
         }
     }
 
@@ -73,6 +74,36 @@ public class PoleLocationUtils {
             ex.printStackTrace();
         }
         return mPoleAddress;
+    }
+
+    private String convertLatitude(double latitude) {
+        StringBuilder builder = new StringBuilder();
+        String latitudeDegrees = Location.convert(Math.abs(latitude), Location.FORMAT_SECONDS);
+        String[] latitudeSplit = latitudeDegrees.split(":");
+        builder.append(latitudeSplit[0]);
+        builder.append("°");
+        builder.append(latitudeSplit[1]);
+        builder.append("'");
+        builder.append(latitudeSplit[2]);
+        builder.append("\"");
+        builder.append(latitude > 0 ? " N" : " S");
+
+        return builder.toString();
+    }
+
+    private String convertLongitude(double longitude) {
+        StringBuilder builder = new StringBuilder();
+        String longitudeDegrees = Location.convert(Math.abs(longitude), Location.FORMAT_SECONDS);
+        String[] longitudeSplit = longitudeDegrees.split(":");
+        builder.append(longitudeSplit[0]);
+        builder.append("°");
+        builder.append(longitudeSplit[1]);
+        builder.append("'");
+        builder.append(longitudeSplit[2]);
+        builder.append("\"");
+        builder.append(longitude > 0 ? " E" : " W");
+
+        return builder.toString();
     }
 
     public void showProviderSearchDialog() {
