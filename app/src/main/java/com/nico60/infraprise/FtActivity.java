@@ -42,7 +42,6 @@ public class FtActivity extends AppCompatActivity implements PopupMenu.OnMenuIte
 
     private AlertDialog mDialog;
     private AppFileUtils mAppFileUtils;
-    private AppImageUtils mAppImageUtils;
     private boolean isUpdating = false;
     private EditText mAdrInput;
     private EditText mFtBeInput;
@@ -73,7 +72,6 @@ public class FtActivity extends AppCompatActivity implements PopupMenu.OnMenuIte
         setContentView(R.layout.activity_ft);
 
         mAppFileUtils = new AppFileUtils(this);
-        mAppImageUtils = new AppImageUtils(this);
         mFtDb = new FtDatabase(this);
         mMainActivity = new MainActivity();
         mPoleLocationUtils = new PoleLocationUtils(this);
@@ -154,7 +152,8 @@ public class FtActivity extends AppCompatActivity implements PopupMenu.OnMenuIte
                 mNroText = mNroInput.getText().toString();
                 mPmText = mPmInput.getText().toString();
                 if (isAnswered()) {
-                    mAppImageUtils.dispatchTakePictureIntent(mNroText, mPmText, mPoleType, mGftText);
+                    new AppImageUtils(FtActivity.this, mNroText, mPmText, mPoleType,
+                            mGftText).poleViewDialog();
                 } else {
                     ftWarning();
                 }
@@ -235,7 +234,8 @@ public class FtActivity extends AppCompatActivity implements PopupMenu.OnMenuIte
                 ftActivityWeakReference.get().mAdrInput.setText(
                         ftActivityWeakReference.get().mPoleLocationUtils.getAddress());
             } else {
-                Toast.makeText(ftActivityWeakReference.get(), R.string.pole_location_warning, Toast.LENGTH_LONG).show();
+                Toast.makeText(ftActivityWeakReference.get(), R.string.pole_location_warning,
+                        Toast.LENGTH_LONG).show();
             }
         }
     }
@@ -284,7 +284,8 @@ public class FtActivity extends AppCompatActivity implements PopupMenu.OnMenuIte
                 = new ArrayAdapter<>(this, R.layout.list_view_items, R.id.textListView, strList);
         dialogListView.setAdapter(arrayAdapter);
 
-        mDialog.setButton(AlertDialog.BUTTON_NEGATIVE, getString(android.R.string.cancel), new DialogInterface.OnClickListener() {
+        mDialog.setButton(AlertDialog.BUTTON_NEGATIVE, getString(android.R.string.cancel),
+                new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int id) {
                 dialog.cancel();

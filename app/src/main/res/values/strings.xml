@@ -68,4 +68,9 @@
     <string name="loc_provider_info_message">Position yourself next to the pole and press OK to get its precise location.</string>
     <string name="loc_provider_info_checkbox">Don\'t show this message again</string>
     <string name="loc_provider_info_search">Search location&#8230;</string>
+    <string name="pole_view_title">Choose a view</string>
+    <string name="pole_label_view">Label</string>
+    <string name="pole_whole_view">Whole</string>
+    <string name="pole_top_view">Top</string>
+    <string name="pole_additional_view">Other</string>
 </resources>

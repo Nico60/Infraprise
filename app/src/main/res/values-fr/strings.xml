@@ -64,4 +64,9 @@
     <string name="loc_provider_info_message">Positionnez-vous à côté du poteau et appuyer sur OK pour obtenir sa localisation précise.</string>
     <string name="loc_provider_info_checkbox">Ne plus afficher ce message</string>
     <string name="loc_provider_info_search">Recherche emplacement&#8230;</string>
+    <string name="pole_view_title">Choisir une vue</string>
+    <string name="pole_label_view">Etiquette</string>
+    <string name="pole_whole_view">Ensemble</string>
+    <string name="pole_top_view">Haut</string>
+    <string name="pole_additional_view">Autre</string>
 </resources>

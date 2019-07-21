@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>  
+<resources>
+
+    <string-array name="poleViewArray">
+        <item>@string/pole_label_view</item>
+        <item>@string/pole_whole_view</item>
+        <item>@string/pole_top_view</item>
+        <item>@string/pole_additional_view</item>
+   </string-array>
+
+</resources>

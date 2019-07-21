@@ -36,14 +36,13 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-public class AeopActivity extends AppCompatActivity  implements PopupMenu.OnMenuItemClickListener {
+public class AeopActivity extends AppCompatActivity implements PopupMenu.OnMenuItemClickListener {
 
     private static final int REQUEST_TAKE_PHOTO = 1;
 
     private AeopDatabase mAeopDb;
     private AlertDialog mDialog;
     private AppFileUtils mAppFileUtils;
-    private AppImageUtils mAppImageUtils;
     private boolean isUpdating = false;
     private EditText mAdrInput;
     private EditText mAeopInput;
@@ -77,7 +76,6 @@ public class AeopActivity extends AppCompatActivity  implements PopupMenu.OnMenu
         setContentView(R.layout.activity_aeop);
 
         mAppFileUtils = new AppFileUtils(this);
-        mAppImageUtils = new AppImageUtils(this);
         mAeopDb = new AeopDatabase(this);
         mMainActivity = new MainActivity();
         mPoleLocationUtils = new PoleLocationUtils(this);
@@ -163,7 +161,8 @@ public class AeopActivity extends AppCompatActivity  implements PopupMenu.OnMenu
                 mNroText = mNroInput.getText().toString();
                 mPmText = mPmInput.getText().toString();
                 if (isAnswered()) {
-                    mAppImageUtils.dispatchTakePictureIntent(mNroText, mPmText, mPoleType, mAeopText);
+                    new AppImageUtils(AeopActivity.this, mNroText, mPmText, mPoleType,
+                            mAeopText).dispatchTakePictureIntent();
                 } else {
                     aeopWarning();
                 }
@@ -244,7 +243,8 @@ public class AeopActivity extends AppCompatActivity  implements PopupMenu.OnMenu
                 aeopActivityWeakReference.get().mAdrInput.setText(
                         aeopActivityWeakReference.get().mPoleLocationUtils.getAddress());
             } else {
-                Toast.makeText(aeopActivityWeakReference.get(), R.string.pole_location_warning, Toast.LENGTH_LONG).show();
+                Toast.makeText(aeopActivityWeakReference.get(), R.string.pole_location_warning,
+                        Toast.LENGTH_LONG).show();
             }
         }
     }
@@ -293,7 +293,8 @@ public class AeopActivity extends AppCompatActivity  implements PopupMenu.OnMenu
                 = new ArrayAdapter<>(this, R.layout.list_view_items, R.id.textListView, strList);
         dialogListView.setAdapter(arrayAdapter);
 
-        mDialog.setButton(AlertDialog.BUTTON_NEGATIVE, getString(android.R.string.cancel), new DialogInterface.OnClickListener() {
+        mDialog.setButton(AlertDialog.BUTTON_NEGATIVE, getString(android.R.string.cancel),
+                new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int id) {
                 dialog.cancel();

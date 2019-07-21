@@ -1,10 +1,17 @@
 package com.nico60.infraprise.Utils;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Environment;
 import android.provider.MediaStore;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.ListView;
 import android.widget.Toast;
 
 import com.nico60.infraprise.R;
@@ -12,6 +19,7 @@ import com.nico60.infraprise.R;
 import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 
 import static android.support.v4.content.FileProvider.getUriForFile;
@@ -27,16 +35,44 @@ public class AppImageUtils {
     private String mNroNum;
     private String mPmNum;
     private String mPoleType;
+    private String mPoleView = "";
 
-    public AppImageUtils(Activity activity) {
+    public AppImageUtils(Activity activity, String nro, String pm, String type, String fileName) {
         mActivity = activity;
-    }
-
-    public void dispatchTakePictureIntent(String nro, String pm, String type, String fileName) {
         mNroNum = nro;
         mPmNum = pm;
         mPoleType = type;
         mFileName = fileName;
+    }
+
+    public void poleViewDialog() {
+        LayoutInflater inflater = (LayoutInflater) mActivity.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        final View view = inflater.inflate(R.layout.dialog_listview, null, false);
+        ListView dialogListView = (ListView) view.findViewById(R.id.dialog_list_view);
+        final String[] arrayView = mActivity.getResources().getStringArray(R.array.poleViewArray);
+        final ArrayAdapter<String> dialogArrayAdapter = new ArrayAdapter<>(mActivity, R.layout.list_view_items,
+                R.id.textListView, arrayView);
+        AlertDialog.Builder builder = new AlertDialog.Builder(mActivity);
+        builder.setView(view);
+        final AlertDialog dialog = builder.create();
+        dialog.setTitle(R.string.pole_view_title);
+        dialogListView.setAdapter(dialogArrayAdapter);
+        dialogListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                if (position == 3) {
+                    mPoleView = "";
+                } else {
+                    mPoleView = "_" + arrayView[position];
+                }
+                dispatchTakePictureIntent();
+                dialog.dismiss();
+            }
+        });
+        dialog.show();
+    }
+
+    public void dispatchTakePictureIntent() {
         if (isExternalStorageWritable()) {
             Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
             if (takePictureIntent.resolveActivity(mActivity.getPackageManager()) != null) {
@@ -61,7 +97,7 @@ public class AppImageUtils {
     private File createImageFile() throws IOException {
         String timeStamp = new SimpleDateFormat("yyyyMMdd-HHmmss").format(new Date());
         String imageFileName = mActivity.getString(R.string.nro) + mNroNum + "_" + mActivity.getString(R.string.pm) + mPmNum + "_" + mPoleType +
-                mFileName + "_" + format("%s.jpg", timeStamp);
+                mFileName + mPoleView + "_" + format("%s.jpg", timeStamp);
         return new File(createDirectory(), imageFileName);
     }
 
