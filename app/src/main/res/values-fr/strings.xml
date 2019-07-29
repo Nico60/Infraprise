@@ -69,4 +69,6 @@
     <string name="pole_whole_view">Ensemble</string>
     <string name="pole_top_view">Haut</string>
     <string name="pole_additional_view">Autre</string>
+    <string name="meter_string">mètre(s)</string>
+    <string name="meters_string">mètres</string>
 </resources>

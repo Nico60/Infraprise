@@ -16,223 +16,236 @@
         android:layout_marginTop="16dp"
         android:layout_marginEnd="16dp">
 
-        <android.support.constraint.ConstraintLayout
-            android:id="@+id/btConstraintLayout"
+        <HorizontalScrollView
+            android:id="@+id/btHorizontalScrollView"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="@drawable/card_view_shape"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
+            android:fillViewport="true">
 
-            <android.support.constraint.Guideline
-                android:id="@+id/btGuideline"
+            <android.support.constraint.ConstraintLayout
+                android:id="@+id/btConstraintLayout"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                app:layout_constraintGuide_begin="8dp" />
+                android:layout_height="match_parent"
+                android:background="@drawable/card_view_shape">
 
-            <android.support.constraint.Guideline
-                android:id="@+id/btGuideline2"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                app:layout_constraintGuide_begin="16dp" />
+                <android.support.constraint.Guideline
+                    android:id="@+id/btGuideline"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    app:layout_constraintGuide_begin="8dp" />
 
-            <TextView
-                android:id="@+id/btNroTextView"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="4dp"
-                android:layout_marginTop="16dp"
-                android:text="@string/nro_number"
-                android:textColor="@color/textColorPrimary"
-                app:layout_constraintStart_toStartOf="@+id/btGuideline"
-                app:layout_constraintTop_toBottomOf="@+id/btSpecTextView" />
+                <android.support.constraint.Guideline
+                    android:id="@+id/btGuideline2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    app:layout_constraintGuide_begin="16dp" />
 
-            <EditText
-                android:id="@+id/btNroText"
-                android:layout_width="60dp"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="128dp"
-                android:backgroundTint="@color/textColorPrimary"
-                android:ems="10"
-                android:inputType="number"
-                android:textColor="@color/textColorPrimary"
-                app:layout_constraintBaseline_toBaselineOf="@+id/btNroTextView"
-                app:layout_constraintStart_toEndOf="@+id/btNroTextView" />
+                <TextView
+                    android:id="@+id/btNroTextView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="4dp"
+                    android:layout_marginTop="16dp"
+                    android:text="@string/nro_number"
+                    android:textColor="@color/textColorPrimary"
+                    app:layout_constraintStart_toStartOf="@+id/btGuideline"
+                    app:layout_constraintTop_toBottomOf="@+id/btSpecTextView" />
 
-            <TextView
-                android:id="@+id/btPmTextView"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="4dp"
-                android:layout_marginTop="36dp"
-                android:text="@string/pm_number"
-                android:textColor="@color/textColorPrimary"
-                app:layout_constraintStart_toStartOf="@+id/btGuideline"
-                app:layout_constraintTop_toBottomOf="@+id/btNroTextView" />
+                <EditText
+                    android:id="@+id/btNroText"
+                    android:layout_width="50dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:backgroundTint="@color/textColorPrimary"
+                    android:ems="10"
+                    android:gravity="center_horizontal|center_vertical"
+                    android:inputType="number"
+                    android:textColor="@color/textColorPrimary"
+                    app:layout_constraintBaseline_toBaselineOf="@+id/btNroTextView"
+                    app:layout_constraintStart_toEndOf="@+id/btNroTextView" />
 
-            <EditText
-                android:id="@+id/btPmText"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:backgroundTint="@color/textColorPrimary"
-                android:ems="10"
-                android:inputType="number"
-                android:textColor="@color/textColorPrimary"
-                app:layout_constraintBaseline_toBaselineOf="@+id/btPmTextView"
-                app:layout_constraintEnd_toEndOf="@+id/btNroText"
-                app:layout_constraintStart_toStartOf="@+id/btNroText" />
+                <TextView
+                    android:id="@+id/btPmTextView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="4dp"
+                    android:layout_marginTop="36dp"
+                    android:text="@string/pm_number"
+                    android:textColor="@color/textColorPrimary"
+                    app:layout_constraintStart_toStartOf="@+id/btGuideline"
+                    app:layout_constraintTop_toBottomOf="@+id/btNroTextView" />
 
-            <TextView
-                android:id="@+id/btBtTextView"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="4dp"
-                android:layout_marginTop="36dp"
-                android:text="@string/bt_number"
-                android:textColor="@color/textColorPrimary"
-                app:layout_constraintStart_toStartOf="@+id/btGuideline"
-                app:layout_constraintTop_toBottomOf="@+id/btPmTextView" />
+                <EditText
+                    android:id="@+id/btPmText"
+                    android:layout_width="50dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:backgroundTint="@color/textColorPrimary"
+                    android:ems="10"
+                    android:gravity="center_horizontal|center_vertical"
+                    android:inputType="number"
+                    android:textColor="@color/textColorPrimary"
+                    app:layout_constraintBaseline_toBaselineOf="@+id/btPmTextView"
+                    app:layout_constraintStart_toEndOf="@+id/btPmTextView" />
 
-            <EditText
-                android:id="@+id/btBtText"
-                android:layout_width="60dp"
-                android:layout_height="wrap_content"
-                android:backgroundTint="@color/textColorPrimary"
-                android:ems="10"
-                android:inputType="number"
-                android:textColor="@color/textColorPrimary"
-                app:layout_constraintBaseline_toBaselineOf="@+id/btBtTextView"
-                app:layout_constraintEnd_toEndOf="@+id/btPmText"
-                app:layout_constraintStart_toStartOf="@+id/btPmText" />
+                <TextView
+                    android:id="@+id/btBtTextView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="4dp"
+                    android:layout_marginTop="36dp"
+                    android:text="@string/bt_number"
+                    android:textColor="@color/textColorPrimary"
+                    app:layout_constraintStart_toStartOf="@+id/btGuideline"
+                    app:layout_constraintTop_toBottomOf="@+id/btPmTextView" />
 
-            <TextView
-                android:id="@+id/btAdrTextView"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="4dp"
-                android:layout_marginTop="36dp"
-                android:layout_marginBottom="24dp"
-                android:text="@string/address"
-                android:textColor="@color/textColorPrimary"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toStartOf="@+id/btGuideline"
-                app:layout_constraintTop_toBottomOf="@+id/btLongTextView" />
+                <EditText
+                    android:id="@+id/btBtText"
+                    android:layout_width="50dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:backgroundTint="@color/textColorPrimary"
+                    android:ems="10"
+                    android:gravity="center_horizontal|center_vertical"
+                    android:inputType="number"
+                    android:textColor="@color/textColorPrimary"
+                    app:layout_constraintBaseline_toBaselineOf="@+id/btBtTextView"
+                    app:layout_constraintStart_toEndOf="@+id/btBtTextView" />
 
-            <EditText
-                android:id="@+id/btAdrText"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="20dp"
-                android:backgroundTint="@color/textColorPrimary"
-                android:ems="10"
-                android:inputType="textPostalAddress"
-                android:textColor="@color/textColorPrimary"
-                app:layout_constraintBaseline_toBaselineOf="@+id/btAdrTextView"
-                app:layout_constraintEnd_toEndOf="@+id/btLongText"
-                app:layout_constraintStart_toEndOf="@+id/btAdrTextView" />
+                <TextView
+                    android:id="@+id/btAdrTextView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="4dp"
+                    android:layout_marginTop="36dp"
+                    android:layout_marginBottom="24dp"
+                    android:text="@string/address"
+                    android:textColor="@color/textColorPrimary"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="@+id/btGuideline"
+                    app:layout_constraintTop_toBottomOf="@+id/btLongTextView" />
 
-            <TextView
-                android:id="@+id/btLatTextView"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="4dp"
-                android:layout_marginTop="16dp"
-                android:text="@string/pole_latitude"
-                android:textColor="@color/textColorPrimary"
-                app:layout_constraintStart_toStartOf="@+id/btGuideline"
-                app:layout_constraintTop_toBottomOf="@+id/btLocTextView" />
+                <EditText
+                    android:id="@+id/btAdrText"
+                    android:layout_width="200dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:backgroundTint="@color/textColorPrimary"
+                    android:ems="10"
+                    android:gravity="center_horizontal|center_vertical"
+                    android:inputType="textPostalAddress"
+                    android:textColor="@color/textColorPrimary"
+                    app:layout_constraintBaseline_toBaselineOf="@+id/btAdrTextView"
+                    app:layout_constraintStart_toEndOf="@+id/btAdrTextView" />
 
-            <EditText
-                android:id="@+id/btLatText"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:backgroundTint="@color/textColorPrimary"
-                android:ems="10"
-                android:inputType="numberDecimal"
-                android:textColor="@color/textColorPrimary"
-                app:layout_constraintBaseline_toBaselineOf="@id/btLatTextView"
-                app:layout_constraintEnd_toEndOf="@+id/btBtText"
-                app:layout_constraintStart_toStartOf="@+id/btBtText" />
+                <TextView
+                    android:id="@+id/btLatTextView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="4dp"
+                    android:layout_marginTop="16dp"
+                    android:text="@string/pole_latitude"
+                    android:textColor="@color/textColorPrimary"
+                    app:layout_constraintStart_toStartOf="@+id/btGuideline"
+                    app:layout_constraintTop_toBottomOf="@+id/btLocTextView" />
 
-            <TextView
-                android:id="@+id/btLongTextView"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="4dp"
-                android:layout_marginTop="36dp"
-                android:text="@string/pole_longitude"
-                android:textColor="@color/textColorPrimary"
-                app:layout_constraintStart_toStartOf="@+id/btGuideline"
-                app:layout_constraintTop_toBottomOf="@+id/btLatTextView" />
+                <EditText
+                    android:id="@+id/btLatText"
+                    android:layout_width="160dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:backgroundTint="@color/textColorPrimary"
+                    android:ems="10"
+                    android:gravity="center_horizontal|center_vertical"
+                    android:inputType="numberDecimal"
+                    android:textColor="@color/textColorPrimary"
+                    app:layout_constraintBaseline_toBaselineOf="@id/btLatTextView"
+                    app:layout_constraintStart_toEndOf="@+id/btLatTextView" />
 
-            <EditText
-                android:id="@+id/btLongText"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:backgroundTint="@color/textColorPrimary"
-                android:ems="10"
-                android:inputType="numberDecimal"
-                android:textColor="@color/textColorPrimary"
-                app:layout_constraintBaseline_toBaselineOf="@id/btLongTextView"
-                app:layout_constraintEnd_toEndOf="@id/btLatText"
-                app:layout_constraintStart_toStartOf="@id/btLatText" />
+                <TextView
+                    android:id="@+id/btLongTextView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="4dp"
+                    android:layout_marginTop="36dp"
+                    android:text="@string/pole_longitude"
+                    android:textColor="@color/textColorPrimary"
+                    app:layout_constraintStart_toStartOf="@+id/btGuideline"
+                    app:layout_constraintTop_toBottomOf="@+id/btLatTextView" />
 
-            <TextView
-                android:id="@+id/btSpecTextView"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/spec_title"
-                android:textColor="@color/textColorPrimary"
-                android:textSize="18sp"
-                android:textStyle="bold|italic"
-                app:layout_constraintStart_toStartOf="@+id/btGuideline"
-                app:layout_constraintTop_toTopOf="@+id/btGuideline2" />
+                <EditText
+                    android:id="@+id/btLongText"
+                    android:layout_width="160dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:backgroundTint="@color/textColorPrimary"
+                    android:ems="10"
+                    android:gravity="center_horizontal|center_vertical"
+                    android:inputType="numberDecimal"
+                    android:textColor="@color/textColorPrimary"
+                    app:layout_constraintBaseline_toBaselineOf="@id/btLongTextView"
+                    app:layout_constraintStart_toEndOf="@+id/btLongTextView" />
 
-            <TextView
-                android:id="@+id/btLocTextView"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="24dp"
-                android:text="@string/loc_title"
-                android:textColor="@color/textColorPrimary"
-                android:textSize="18sp"
-                android:textStyle="bold|italic"
-                app:layout_constraintStart_toStartOf="@+id/btGuideline"
-                app:layout_constraintTop_toBottomOf="@+id/btBtTextView" />
+                <TextView
+                    android:id="@+id/btSpecTextView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/spec_title"
+                    android:textColor="@color/textColorPrimary"
+                    android:textSize="18sp"
+                    android:textStyle="bold|italic"
+                    app:layout_constraintStart_toStartOf="@+id/btGuideline"
+                    app:layout_constraintTop_toTopOf="@+id/btGuideline2" />
 
+                <TextView
+                    android:id="@+id/btLocTextView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="24dp"
+                    android:text="@string/loc_title"
+                    android:textColor="@color/textColorPrimary"
+                    android:textSize="18sp"
+                    android:textStyle="bold|italic"
+                    app:layout_constraintStart_toStartOf="@+id/btGuideline"
+                    app:layout_constraintTop_toBottomOf="@+id/btBtTextView" />
 
-        </android.support.constraint.ConstraintLayout>
+            </android.support.constraint.ConstraintLayout>
+
+        </HorizontalScrollView>
 
         <Button
             android:id="@+id/btPicButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="32dp"
+            android:layout_marginBottom="32dp"
             android:background="@drawable/btn_shape"
             android:text="@string/take_picture"
             android:textColor="@color/btnTextColor"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.75"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/btConstraintLayout" />
+            app:layout_constraintTop_toBottomOf="@+id/btHorizontalScrollView" />
 
         <Button
             android:id="@+id/btLocButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="32dp"
+            android:layout_marginBottom="32dp"
             android:background="@drawable/btn_shape"
             android:paddingStart="4dp"
             android:paddingEnd="4dp"
             android:text="@string/take_location"
             android:textColor="@color/btnTextColor"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.25"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/btConstraintLayout" />
+            app:layout_constraintTop_toBottomOf="@+id/btHorizontalScrollView" />
 
     </android.support.constraint.ConstraintLayout>
 

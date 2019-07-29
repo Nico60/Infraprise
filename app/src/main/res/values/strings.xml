@@ -73,4 +73,6 @@
     <string name="pole_whole_view">Whole</string>
     <string name="pole_top_view">Top</string>
     <string name="pole_additional_view">Other</string>
+    <string name="meter_string">meter(s)</string>
+    <string name="meters_string">meters</string>
 </resources>
