@@ -51,7 +51,9 @@
     <string name="copy_title">Copy</string>
     <string name="move_title">Move</string>
     <string name="directory_select_title">Select directory</string>
-    <string name="file_text_saved">Text file %s created</string>
+    <string name="file_text_saved">File %s %s</string>
+    <string name="file_created">created</string>
+    <string name="file_overwrited">overwrited</string>
     <string name="picture_saved">Picture saved</string>
     <string name="item_selected">\u0020 Selection(s)</string>
     <string name="db_sheet_list">Sheet list saved</string>
@@ -75,4 +77,8 @@
     <string name="pole_additional_view">Other</string>
     <string name="meter_string">meter(s)</string>
     <string name="meters_string">meters</string>
+    <string name="delete_db_sheet">Delete %s sheet ?</string>
+    <string name="exist_warning">Warning</string>
+    <string name="file_exist_message">File %s already exist.\nDo you want to overwrite this file ?</string>
+    <string name="sheet_exist_message">Sheet %s already exist.\nDo you want to overwrite this sheet ?</string>
 </resources>

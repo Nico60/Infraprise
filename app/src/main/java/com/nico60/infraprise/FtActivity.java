@@ -32,7 +32,6 @@ import com.nico60.infraprise.Utils.PoleLocationUtils;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -42,7 +41,10 @@ public class FtActivity extends AppCompatActivity implements PopupMenu.OnMenuIte
 
     private AlertDialog mDialog;
     private AppFileUtils mAppFileUtils;
+    private ArrayAdapter<String> mDialogArrayAdapter;
+    private ArrayList<String> mDialogArrayList;
     private boolean isUpdating = false;
+    private boolean mSheetExist = false;
     private EditText mAdrInput;
     private EditText mFtBeInput;
     private EditText mGftInput;
@@ -77,6 +79,10 @@ public class FtActivity extends AppCompatActivity implements PopupMenu.OnMenuIte
         mPoleLocationUtils = new PoleLocationUtils(this);
         AlertDialog.Builder builder = new AlertDialog.Builder(this, R.style.MyDialogStyle);
         mDialog = builder.create();
+
+        mDialogArrayList = new ArrayList<>();
+        mDialogArrayAdapter = new ArrayAdapter<>(this, R.layout.list_view_items,
+                R.id.textListView, mDialogArrayList);
 
         mAdrInput = findViewById(R.id.ftAdrText);
         mFtBeInput = findViewById(R.id.ftBeText);
@@ -134,10 +140,14 @@ public class FtActivity extends AppCompatActivity implements PopupMenu.OnMenuIte
                     updateSheetToast();
                     finish();
                 } else if (isAnswered()) {
-                    mFtDb.addFtDbUtils(new FtDbUtils(ftSheetName, mNroText, mPmText,
-                            mGftText, mFtBeText, mAdrText, mLatText, mLongText));
-                    createSheetToast();
-                    finish();
+                    if (!isSheetExist(ftSheetName)) {
+                        mFtDb.addFtDbUtils(new FtDbUtils(ftSheetName, mNroText, mPmText,
+                                mGftText, mFtBeText, mAdrText, mLatText, mLongText));
+                        createSheetToast();
+                        finish();
+                    } else {
+                        shouldOverwriteSheet(ftSheetName);
+                    }
                 } else {
                     ftWarning();
                 }
@@ -266,23 +276,19 @@ public class FtActivity extends AppCompatActivity implements PopupMenu.OnMenuIte
         LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         final View view = inflater.inflate(R.layout.dialog_listview, null, false);
         mDialog.setView(view);
+        mDialog.setCancelable(false);
         mDialog.setTitle(R.string.select_sheet);
 
         List<FtDbUtils> ftDatabaseList = mFtDb.getAllFtDbUtils();
-        List<String> r = new ArrayList<>();
+        mDialogArrayList.clear();
         for (FtDbUtils ft : ftDatabaseList) {
             String str = ft.getSheetName();
-            r.add(str);
+            mDialogArrayList.add(str);
         }
-        String[] ftList = r.toArray(new String[]{});
-
-        ArrayList<String> strList = new ArrayList<>(Arrays.asList(ftList));
-        Collections.sort(strList);
+        Collections.sort(mDialogArrayList);
 
         ListView dialogListView = (ListView) view.findViewById(R.id.dialog_list_view);
-        final ArrayAdapter<String> arrayAdapter
-                = new ArrayAdapter<>(this, R.layout.list_view_items, R.id.textListView, strList);
-        dialogListView.setAdapter(arrayAdapter);
+        dialogListView.setAdapter(mDialogArrayAdapter);
 
         mDialog.setButton(AlertDialog.BUTTON_NEGATIVE, getString(android.R.string.cancel),
                 new DialogInterface.OnClickListener() {
@@ -295,7 +301,7 @@ public class FtActivity extends AppCompatActivity implements PopupMenu.OnMenuIte
         dialogListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                mNameItemPositionForPopupMenu = arrayAdapter.getItem(position);
+                mNameItemPositionForPopupMenu = mDialogArrayAdapter.getItem(position);
                 showPopupMenu(view);
             }
         });
@@ -314,19 +320,19 @@ public class FtActivity extends AppCompatActivity implements PopupMenu.OnMenuIte
     public boolean onMenuItemClick(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.open_dialog_item:
-                showFtSheet(mNameItemPositionForPopupMenu);
+                showFtSheet();
                 mDialog.dismiss();
                 return true;
             case R.id.modify_dialog_item:
-                updateFtSheet(mNameItemPositionForPopupMenu);
+                updateFtSheet();
                 mDialog.dismiss();
                 return true;
             case R.id.create_file_text_item:
-                createFileText(mNameItemPositionForPopupMenu);
+                createFileText();
                 mDialog.dismiss();
                 return true;
             case R.id.delete_dialog_item:
-                deleteFtSheet(mNameItemPositionForPopupMenu);
+                deleteFtSheet();
                 mDialog.dismiss();
                 return true;
             default:
@@ -334,8 +340,8 @@ public class FtActivity extends AppCompatActivity implements PopupMenu.OnMenuIte
         }
     }
 
-    private void showFtSheet(String ftSheet) {
-        FtDbUtils ft = mFtDb.getFtDbUtils(ftSheet);
+    private void showFtSheet() {
+        FtDbUtils ft = mFtDb.getFtDbUtils(mNameItemPositionForPopupMenu);
         String data = "\n" + getString(R.string.nro_number) + " " + ft.getNroNumber() + "\n\n" +
                 getString(R.string.pm_number) + " " + ft.getPmNumber() + "\n\n" +
                 getString(R.string.ft_be_number) + " " + ft.getFtBeNumber() + "\n\n" +
@@ -346,17 +352,8 @@ public class FtActivity extends AppCompatActivity implements PopupMenu.OnMenuIte
         showMessage(ft.getSheetName(), data);
     }
 
-    private void showMessage(String title, String message) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this, R.style.MyDialogStyle);
-        builder.create();
-        builder.setCancelable(true);
-        builder.setTitle(title);
-        builder.setMessage(message);
-        builder.show();
-    }
-
-    private void updateFtSheet(String ftSheet) {
-        FtDbUtils ft = mFtDb.getFtDbUtils(ftSheet);
+    private void updateFtSheet() {
+        FtDbUtils ft = mFtDb.getFtDbUtils(mNameItemPositionForPopupMenu);
         mNroInput.setText(ft.getNroNumber());
         mPmInput.setText(ft.getPmNumber());
         mGftInput.setText(ft.getGftNumber());
@@ -364,12 +361,12 @@ public class FtActivity extends AppCompatActivity implements PopupMenu.OnMenuIte
         mLatInput.setText(ft.getLatLoc());
         mLongInput.setText(ft.getLongLoc());
         mAdrInput.setText(ft.getAdressName());
-        mOldFtSheetName = ftSheet;
+        mOldFtSheetName = mNameItemPositionForPopupMenu;
         isUpdating = true;
     }
 
-    private void createFileText(String ftSheet) {
-        FtDbUtils ft = mFtDb.getFtDbUtils(ftSheet);
+    private void createFileText() {
+        FtDbUtils ft = mFtDb.getFtDbUtils(mNameItemPositionForPopupMenu);
         String[] list = new String[] {
                 getString(R.string.nro_number) + " " + ft.getNroNumber(),
                 getString(R.string.pm_number) + " " + ft.getPmNumber(),
@@ -378,11 +375,31 @@ public class FtActivity extends AppCompatActivity implements PopupMenu.OnMenuIte
                 getString(R.string.pole_latitude) + " " + ft.getLatLoc(),
                 getString(R.string.pole_longitude) + " " + ft.getLongLoc(),
                 getString(R.string.address) + " " + ft.getAdressName()};
-        mAppFileUtils.save(ft.getNroNumber(), ft.getPmNumber(), mPoleType, ft.getGftNumber(), list);
+        mAppFileUtils.createTextFile(ft.getNroNumber(), ft.getPmNumber(), mPoleType, ft.getGftNumber(), list);
     }
 
-    private void deleteFtSheet(String ftSheet) {
-        mFtDb.deleteFtDbUtils(ftSheet);
+    private void deleteFtSheet() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this, R.style.MyDialogStyle);
+        builder.create();
+        builder.setCancelable(false);
+        builder.setMessage(getString(R.string.delete_db_sheet, mNameItemPositionForPopupMenu));
+
+        builder.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int id) {
+                mFtDb.deleteFtDbUtils(mNameItemPositionForPopupMenu);
+                mDialogArrayAdapter.notifyDataSetChanged();
+            }
+        });
+
+        builder.setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int id) {
+                dialog.cancel();
+            }
+        });
+
+        builder.show();
     }
 
     private int getSheetCount() {
@@ -391,6 +408,62 @@ public class FtActivity extends AppCompatActivity implements PopupMenu.OnMenuIte
 
     private boolean isAnswered() {
         return (!mNroText.isEmpty() && !mPmText.isEmpty() && !mGftText.isEmpty());
+    }
+
+    private boolean isSheetExist(String sheetName) {
+        List<FtDbUtils> ftDatabaseList = mFtDb.getAllFtDbUtils();
+        for (FtDbUtils ft : ftDatabaseList) {
+            String str = ft.getSheetName();
+            if (str.equals(sheetName)) {
+                mSheetExist = true;
+            }
+        }
+
+        return mSheetExist;
+    }
+
+    private void shouldOverwriteSheet(final String sheetName) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this, R.style.MyDialogStyle);
+        builder.create();
+        builder.setCancelable(false);
+        builder.setTitle(getString(R.string.exist_warning));
+        builder.setMessage(getString(R.string.sheet_exist_message, sheetName));
+
+        builder.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int id) {
+                mFtDb.deleteFtDbUtils(sheetName);
+                mFtDb.addFtDbUtils(new FtDbUtils(sheetName, mNroText, mPmText,
+                        mGftText, mFtBeText, mAdrText, mLatText, mLongText));
+                createSheetToast();
+                finish();
+                dialog.dismiss();
+            }
+        });
+
+        builder.setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int id) {
+                dialog.cancel();
+            }
+        });
+
+        builder.show();
+    }
+
+    private void showMessage(String title, String message) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this, R.style.MyDialogStyle);
+        builder.create();
+        builder.setCancelable(false);
+        builder.setTitle(title);
+        builder.setMessage(message);
+        builder.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int id) {
+                dialog.dismiss();
+            }
+        });
+        builder.show();
     }
 
     private void createSheetToast() {

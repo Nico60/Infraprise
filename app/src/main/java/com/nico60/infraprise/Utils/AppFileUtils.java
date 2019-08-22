@@ -1,6 +1,8 @@
 package com.nico60.infraprise.Utils;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.os.Environment;
 import android.webkit.MimeTypeMap;
 import android.widget.Toast;
@@ -27,7 +29,10 @@ public class AppFileUtils {
     private String mFileName;
     private String mNroNum;
     private String mPmNum;
+    private String mPoleNum;
     private String mPoleType;
+    private String[] mList;
+    private File mTextFile;
 
     public AppFileUtils(Activity activity) {
         mActivity = activity;
@@ -78,28 +83,58 @@ public class AppFileUtils {
         }
     }
 
-    public void save(String nro, String pm, String type, String fileName, String[] list) {
+    public void createTextFile(String nro, String pm, String type, String fileName, String[] list) {
         mNroNum = nro;
         mPmNum = pm;
         mPoleType = type;
         mFileName = fileName;
+        mList = list;
+        mPoleNum = mActivity.getString(R.string.nro) + mNroNum + "_" + mActivity.getString(R.string.pm) +
+                mPmNum + "_" + mPoleType + format("%s.txt", mFileName);
+        mTextFile = new File(createDirectory(), mPoleNum);
         if (isExternalStorageWritable()) {
-            File file = new File(createDirectory(), mActivity.getString(R.string.nro) + mNroNum + "_" +
-                    mActivity.getString(R.string.pm) + mPmNum + "_" + mPoleType + format("%s.txt", mFileName));
-            try {
-                FileOutputStream out = new FileOutputStream(file);
-                for (String listToAdd : list) {
-                    out.write(("\n").getBytes());
-                    out.write(listToAdd.getBytes());
-                    out.write(("\n").getBytes());
-                }
-                out.close();
-                Toast.makeText(mActivity, mActivity.getString(R.string.file_text_saved,
-                        type + fileName), Toast.LENGTH_SHORT).show();
-            } catch (Throwable t) {
-                Toast.makeText(mActivity, "Exception: " + t.toString(), Toast.LENGTH_LONG).show();
-                t.printStackTrace();
+            if (!mTextFile.exists()) {
+                save(mActivity.getString(R.string.file_created));
+            } else {
+                AlertDialog.Builder builder = new AlertDialog.Builder(mActivity, R.style.MyDialogStyle);
+                builder.create();
+                builder.setCancelable(false);
+                builder.setTitle(mActivity.getString(R.string.exist_warning));
+                builder.setMessage(mActivity.getString(R.string.file_exist_message, mPoleNum));
+
+                builder.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int id) {
+                        save(mActivity.getString(R.string.file_overwrited));
+                        dialog.dismiss();
+                    }
+                });
+
+                builder.setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int id) {
+                        dialog.cancel();
+                    }
+                });
+
+                builder.show();
             }
+        }
+    }
+
+    private void save(String reason) {
+        try {
+            FileOutputStream out = new FileOutputStream(mTextFile);
+            for (String listToAdd : mList) {
+                out.write(("\n").getBytes());
+                out.write(listToAdd.getBytes());
+                out.write(("\n").getBytes());
+            }
+            out.close();
+            saveToast(reason);
+        } catch (Throwable t) {
+            Toast.makeText(mActivity, "Exception: " + t.toString(), Toast.LENGTH_LONG).show();
+            t.printStackTrace();
         }
     }
 
@@ -152,6 +187,11 @@ public class AppFileUtils {
                 out.closeEntry();
             }
         }
+    }
+
+    private void saveToast(String reason) {
+        Toast.makeText(mActivity, mActivity.getString(R.string.file_text_saved,
+                mPoleNum, reason), Toast.LENGTH_SHORT).show();
     }
 
     public String getFileExt(String ext) {

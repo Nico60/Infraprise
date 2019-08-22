@@ -32,7 +32,6 @@ import com.nico60.infraprise.Utils.PoleLocationUtils;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -42,7 +41,10 @@ public class BtActivity extends AppCompatActivity implements PopupMenu.OnMenuIte
 
     private AlertDialog mDialog;
     private AppFileUtils mAppFileUtils;
+    private ArrayAdapter<String> mDialogArrayAdapter;
+    private ArrayList<String> mDialogArrayList;
     private boolean isUpdating = false;
+    private boolean mSheetExist = false;
     private BtDatabase mBtDb;
     private EditText mAdrInput;
     private EditText mBtInput;
@@ -75,6 +77,10 @@ public class BtActivity extends AppCompatActivity implements PopupMenu.OnMenuIte
         mPoleLocationUtils = new PoleLocationUtils(this);
         AlertDialog.Builder builder = new AlertDialog.Builder(this, R.style.MyDialogStyle);
         mDialog = builder.create();
+
+        mDialogArrayList = new ArrayList<>();
+        mDialogArrayAdapter = new ArrayAdapter<>(this, R.layout.list_view_items,
+                R.id.textListView, mDialogArrayList);
 
         mAdrInput = findViewById(R.id.btAdrText);
         mBtInput = findViewById(R.id.btBtText);
@@ -130,10 +136,14 @@ public class BtActivity extends AppCompatActivity implements PopupMenu.OnMenuIte
                     updateSheetToast();
                     finish();
                 } else if (isAnswered()) {
-                    mBtDb.addBtDbUtils(new BtDbUtils(btSheetName, mNroText, mPmText,
-                            mBtText, mAdrText, mLatText, mLongText));
-                    createSheetToast();
-                    finish();
+                    if (!isSheetExist(btSheetName)) {
+                        mBtDb.addBtDbUtils(new BtDbUtils(btSheetName, mNroText, mPmText,
+                                mBtText, mAdrText, mLatText, mLongText));
+                        createSheetToast();
+                        finish();
+                    } else {
+                        shouldOverwriteSheet(btSheetName);
+                    }
                 } else {
                     btWarning();
                 }
@@ -261,23 +271,19 @@ public class BtActivity extends AppCompatActivity implements PopupMenu.OnMenuIte
         LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         final View view = inflater.inflate(R.layout.dialog_listview, null, false);
         mDialog.setView(view);
+        mDialog.setCancelable(false);
         mDialog.setTitle(R.string.select_sheet);
 
         List<BtDbUtils> btDatabaseList = mBtDb.getAllBtDbUtils();
-        List<String> r = new ArrayList<>();
+        mDialogArrayList.clear();
         for (BtDbUtils bt : btDatabaseList) {
             String str = bt.getSheetName();
-            r.add(str);
+            mDialogArrayList.add(str);
         }
-        String[] btList = r.toArray(new String[]{});
-
-        ArrayList<String> strList = new ArrayList<>(Arrays.asList(btList));
-        Collections.sort(strList);
+        Collections.sort(mDialogArrayList);
 
         ListView dialogListView = (ListView) view.findViewById(R.id.dialog_list_view);
-        final ArrayAdapter<String> arrayAdapter
-                = new ArrayAdapter<>(this, R.layout.list_view_items, R.id.textListView, strList);
-        dialogListView.setAdapter(arrayAdapter);
+        dialogListView.setAdapter(mDialogArrayAdapter);
 
         mDialog.setButton(AlertDialog.BUTTON_NEGATIVE, getString(android.R.string.cancel),
                 new DialogInterface.OnClickListener() {
@@ -290,7 +296,7 @@ public class BtActivity extends AppCompatActivity implements PopupMenu.OnMenuIte
         dialogListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                mNameItemPositionForPopupMenu = arrayAdapter.getItem(position);
+                mNameItemPositionForPopupMenu = mDialogArrayAdapter.getItem(position);
                 showPopupMenu(view);
             }
         });
@@ -309,19 +315,19 @@ public class BtActivity extends AppCompatActivity implements PopupMenu.OnMenuIte
     public boolean onMenuItemClick(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.open_dialog_item:
-                showBtSheet(mNameItemPositionForPopupMenu);
+                showBtSheet();
                 mDialog.dismiss();
                 return true;
             case R.id.modify_dialog_item:
-                updateBtSheet(mNameItemPositionForPopupMenu);
+                updateBtSheet();
                 mDialog.dismiss();
                 return true;
             case R.id.create_file_text_item:
-                createFileText(mNameItemPositionForPopupMenu);
+                createFileText();
                 mDialog.dismiss();
                 return true;
             case R.id.delete_dialog_item:
-                deleteBtSheet(mNameItemPositionForPopupMenu);
+                deleteBtSheet();
                 mDialog.dismiss();
                 return true;
             default:
@@ -329,8 +335,8 @@ public class BtActivity extends AppCompatActivity implements PopupMenu.OnMenuIte
         }
     }
 
-    private void showBtSheet(String btSheet) {
-        BtDbUtils bt = mBtDb.getBtDbUtils(btSheet);
+    private void showBtSheet() {
+        BtDbUtils bt = mBtDb.getBtDbUtils(mNameItemPositionForPopupMenu);
         String data = "\n" + getString(R.string.nro_number) + " " + bt.getNroNumber() + "\n\n" +
                 getString(R.string.pm_number) + " " + bt.getPmNumber() + "\n\n" +
                 getString(R.string.bt_number) + " " + bt.getBtNumber() + "\n\n" +
@@ -340,29 +346,20 @@ public class BtActivity extends AppCompatActivity implements PopupMenu.OnMenuIte
         showMessage(bt.getSheetName(), data);
     }
 
-    private void showMessage(String title, String message) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this, R.style.MyDialogStyle);
-        builder.create();
-        builder.setCancelable(true);
-        builder.setTitle(title);
-        builder.setMessage(message);
-        builder.show();
-    }
-
-    private void updateBtSheet(String btSheet) {
-        BtDbUtils bt = mBtDb.getBtDbUtils(btSheet);
+    private void updateBtSheet() {
+        BtDbUtils bt = mBtDb.getBtDbUtils(mNameItemPositionForPopupMenu);
         mNroInput.setText(bt.getNroNumber());
         mPmInput.setText(bt.getPmNumber());
         mBtInput.setText(bt.getBtNumber());
         mLatInput.setText(bt.getLatLoc());
         mLongInput.setText(bt.getLongLoc());
         mAdrInput.setText(bt.getAdressName());
-        mOldBtSheetName = btSheet;
+        mOldBtSheetName = mNameItemPositionForPopupMenu;
         isUpdating = true;
     }
 
-    private void createFileText(String btSheet) {
-        BtDbUtils bt = mBtDb.getBtDbUtils(btSheet);
+    private void createFileText() {
+        BtDbUtils bt = mBtDb.getBtDbUtils(mNameItemPositionForPopupMenu);
         String[] list = new String[] {
                 getString(R.string.nro_number) + " " + bt.getNroNumber(),
                 getString(R.string.pm_number) + " " + bt.getPmNumber(),
@@ -370,11 +367,31 @@ public class BtActivity extends AppCompatActivity implements PopupMenu.OnMenuIte
                 getString(R.string.pole_latitude) + " " + bt.getLatLoc(),
                 getString(R.string.pole_longitude) + " " + bt.getLongLoc(),
                 getString(R.string.address) + " " + bt.getAdressName()};
-        mAppFileUtils.save(bt.getNroNumber(), bt.getPmNumber(), mPoleType, bt.getBtNumber(), list);
+        mAppFileUtils.createTextFile(bt.getNroNumber(), bt.getPmNumber(), mPoleType, bt.getBtNumber(), list);
     }
 
-    private void deleteBtSheet(String btSheet) {
-        mBtDb.deleteBtDbUtils(btSheet);
+    private void deleteBtSheet() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this, R.style.MyDialogStyle);
+        builder.create();
+        builder.setCancelable(false);
+        builder.setMessage(getString(R.string.delete_db_sheet, mNameItemPositionForPopupMenu));
+
+        builder.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int id) {
+                mBtDb.deleteBtDbUtils(mNameItemPositionForPopupMenu);
+                mDialogArrayAdapter.notifyDataSetChanged();
+            }
+        });
+
+        builder.setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int id) {
+                dialog.cancel();
+            }
+        });
+
+        builder.show();
     }
 
     private int getSheetCount() {
@@ -383,6 +400,62 @@ public class BtActivity extends AppCompatActivity implements PopupMenu.OnMenuIte
 
     private boolean isAnswered() {
         return (!mNroText.isEmpty() && !mPmText.isEmpty() && !mBtText.isEmpty());
+    }
+
+    private boolean isSheetExist(String sheetName) {
+        List<BtDbUtils> btDatabaseList = mBtDb.getAllBtDbUtils();
+        for (BtDbUtils bt : btDatabaseList) {
+            String str = bt.getSheetName();
+            if (str.equals(sheetName)) {
+                mSheetExist = true;
+            }
+        }
+
+        return mSheetExist;
+    }
+
+    private void shouldOverwriteSheet(final String sheetName) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this, R.style.MyDialogStyle);
+        builder.create();
+        builder.setCancelable(false);
+        builder.setTitle(getString(R.string.exist_warning));
+        builder.setMessage(getString(R.string.sheet_exist_message, sheetName));
+
+        builder.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int id) {
+                mBtDb.deleteBtDbUtils(sheetName);
+                mBtDb.addBtDbUtils(new BtDbUtils(sheetName, mNroText, mPmText,
+                        mBtText, mAdrText, mLatText, mLongText));
+                createSheetToast();
+                finish();
+                dialog.dismiss();
+            }
+        });
+
+        builder.setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int id) {
+                dialog.cancel();
+            }
+        });
+
+        builder.show();
+    }
+
+    private void showMessage(String title, String message) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this, R.style.MyDialogStyle);
+        builder.create();
+        builder.setCancelable(false);
+        builder.setTitle(title);
+        builder.setMessage(message);
+        builder.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int id) {
+                dialog.dismiss();
+            }
+        });
+        builder.show();
     }
 
     private void createSheetToast() {

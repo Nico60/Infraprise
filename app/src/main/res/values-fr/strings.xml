@@ -47,7 +47,9 @@
     <string name="copy_title">Copier</string>
     <string name="move_title">Déplacer</string>
     <string name="directory_select_title">Sélectionner répertoire</string>
-    <string name="file_text_saved">Fichier texte %s créé</string>
+    <string name="file_text_saved">Fichier %s %s</string>
+    <string name="file_created">créé</string>
+    <string name="file_overwrited">écrasé</string>
     <string name="picture_saved">Photo sauvegardée</string>
     <string name="item_selected">\u0020 Sélection(s)</string>
     <string name="db_sheet_list">Liste fiche sauvegardée</string>
@@ -71,4 +73,8 @@
     <string name="pole_additional_view">Autre</string>
     <string name="meter_string">mètre(s)</string>
     <string name="meters_string">mètres</string>
+    <string name="delete_db_sheet">Supprimer la fiche %s ?</string>
+    <string name="exist_warning">Avertissement</string>
+    <string name="file_exist_message">Le fichier %s existe déjà.\nVoulez-vous écraser ce fichier ?</string>
+    <string name="sheet_exist_message">La fiche %s existe déjà.\nVoulez-vous écraser cette fiche ?</string>
 </resources>

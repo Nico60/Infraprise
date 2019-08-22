@@ -32,7 +32,6 @@ import com.nico60.infraprise.Utils.PoleLocationUtils;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -43,7 +42,10 @@ public class AeopActivity extends AppCompatActivity implements PopupMenu.OnMenuI
     private AeopDatabase mAeopDb;
     private AlertDialog mDialog;
     private AppFileUtils mAppFileUtils;
+    private ArrayAdapter<String> mDialogArrayAdapter;
+    private ArrayList<String> mDialogArrayList;
     private boolean isUpdating = false;
+    private boolean mSheetExist = false;
     private EditText mAdrInput;
     private EditText mAeopInput;
     private EditText mBtInput;
@@ -81,6 +83,10 @@ public class AeopActivity extends AppCompatActivity implements PopupMenu.OnMenuI
         mPoleLocationUtils = new PoleLocationUtils(this);
         AlertDialog.Builder builder = new AlertDialog.Builder(this, R.style.MyDialogStyle);
         mDialog = builder.create();
+
+        mDialogArrayList = new ArrayList<>();
+        mDialogArrayAdapter = new ArrayAdapter<>(this, R.layout.list_view_items,
+                R.id.textListView, mDialogArrayList);
 
         mAdrInput = findViewById(R.id.aeopAdrText);
         mAeopInput = findViewById(R.id.aeopNumText);
@@ -143,10 +149,14 @@ public class AeopActivity extends AppCompatActivity implements PopupMenu.OnMenuI
                     updateSheetToast();
                     finish();
                 } else if (isAnswered()) {
-                    mAeopDb.addAeopDbUtils(new AeopDbUtils(aeopSheetName, mNroText, mPmText,
-                            mAeopText, mBtText, mHtText, mDrcText, mAdrText, mLatText, mLongText));
-                    createSheetToast();
-                    finish();
+                    if (!isSheetExist(aeopSheetName)) {
+                        mAeopDb.addAeopDbUtils(new AeopDbUtils(aeopSheetName, mNroText, mPmText,
+                                mAeopText, mBtText, mHtText, mDrcText, mAdrText, mLatText, mLongText));
+                        createSheetToast();
+                        finish();
+                    } else {
+                        shouldOverwriteSheet(aeopSheetName);
+                    }
                 } else {
                     aeopWarning();
                 }
@@ -275,23 +285,19 @@ public class AeopActivity extends AppCompatActivity implements PopupMenu.OnMenuI
         LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         final View view = inflater.inflate(R.layout.dialog_listview, null, false);
         mDialog.setView(view);
+        mDialog.setCancelable(false);
         mDialog.setTitle(R.string.select_sheet);
 
         List<AeopDbUtils> aeopDatabaseList = mAeopDb.getAllAeopDbUtils();
-        List<String> r = new ArrayList<>();
+        mDialogArrayList.clear();
         for (AeopDbUtils aeop : aeopDatabaseList) {
             String str = aeop.getSheetName();
-            r.add(str);
+            mDialogArrayList.add(str);
         }
-        String[] aeopList = r.toArray(new String[]{});
-
-        ArrayList<String> strList = new ArrayList<>(Arrays.asList(aeopList));
-        Collections.sort(strList);
+        Collections.sort(mDialogArrayList);
 
         ListView dialogListView = (ListView) view.findViewById(R.id.dialog_list_view);
-        final ArrayAdapter<String> arrayAdapter
-                = new ArrayAdapter<>(this, R.layout.list_view_items, R.id.textListView, strList);
-        dialogListView.setAdapter(arrayAdapter);
+        dialogListView.setAdapter(mDialogArrayAdapter);
 
         mDialog.setButton(AlertDialog.BUTTON_NEGATIVE, getString(android.R.string.cancel),
                 new DialogInterface.OnClickListener() {
@@ -304,7 +310,7 @@ public class AeopActivity extends AppCompatActivity implements PopupMenu.OnMenuI
         dialogListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                mNameItemPositionForPopupMenu = arrayAdapter.getItem(position);
+                mNameItemPositionForPopupMenu = mDialogArrayAdapter.getItem(position);
                 showPopupMenu(view);
             }
         });
@@ -323,19 +329,19 @@ public class AeopActivity extends AppCompatActivity implements PopupMenu.OnMenuI
     public boolean onMenuItemClick(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.open_dialog_item:
-                showAeopSheet(mNameItemPositionForPopupMenu);
+                showAeopSheet();
                 mDialog.dismiss();
                 return true;
             case R.id.modify_dialog_item:
-                updateAeopSheet(mNameItemPositionForPopupMenu);
+                updateAeopSheet();
                 mDialog.dismiss();
                 return true;
             case R.id.create_file_text_item:
-                createFileText(mNameItemPositionForPopupMenu);
+                createFileText();
                 mDialog.dismiss();
                 return true;
             case R.id.delete_dialog_item:
-                deleteAeopSheet(mNameItemPositionForPopupMenu);
+                deleteAeopSheet();
                 mDialog.dismiss();
                 return true;
             default:
@@ -343,8 +349,8 @@ public class AeopActivity extends AppCompatActivity implements PopupMenu.OnMenuI
         }
     }
 
-    private void showAeopSheet(String aeopSheet) {
-        AeopDbUtils aeop = mAeopDb.getAeopDbUtils(aeopSheet);
+    private void showAeopSheet() {
+        AeopDbUtils aeop = mAeopDb.getAeopDbUtils(mNameItemPositionForPopupMenu);
         String data = "\n" + getString(R.string.nro_number) + " " + aeop.getNroNumber() + "\n\n" +
                 getString(R.string.pm_number) + " " + aeop.getPmNumber() + "\n\n" +
                 getString(R.string.aeop_number) + " " + aeop.getAeopNumber() + "\n\n" +
@@ -357,17 +363,8 @@ public class AeopActivity extends AppCompatActivity implements PopupMenu.OnMenuI
         showMessage(aeop.getSheetName(), data);
     }
 
-    private void showMessage(String title, String message) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this, R.style.MyDialogStyle);
-        builder.create();
-        builder.setCancelable(true);
-        builder.setTitle(title);
-        builder.setMessage(message);
-        builder.show();
-    }
-
-    private void updateAeopSheet(String aeopSheet) {
-        AeopDbUtils aeop = mAeopDb.getAeopDbUtils(aeopSheet);
+    private void updateAeopSheet() {
+        AeopDbUtils aeop = mAeopDb.getAeopDbUtils(mNameItemPositionForPopupMenu);
         mNroInput.setText(aeop.getNroNumber());
         mPmInput.setText(aeop.getPmNumber());
         mAeopInput.setText(aeop.getAeopNumber());
@@ -377,12 +374,12 @@ public class AeopActivity extends AppCompatActivity implements PopupMenu.OnMenuI
         mLatInput.setText(aeop.getLatLoc());
         mLongInput.setText(aeop.getLongLoc());
         mAdrInput.setText(aeop.getAdressName());
-        mOldAeopSheetName = aeopSheet;
+        mOldAeopSheetName = mNameItemPositionForPopupMenu;
         isUpdating = true;
     }
 
-    private void createFileText(String aeopSheet) {
-        AeopDbUtils aeop = mAeopDb.getAeopDbUtils(aeopSheet);
+    private void createFileText() {
+        AeopDbUtils aeop = mAeopDb.getAeopDbUtils(mNameItemPositionForPopupMenu);
         String[] list = new String[] {
                 getString(R.string.nro_number) + " " + aeop.getNroNumber(),
                 getString(R.string.pm_number) + " " + aeop.getPmNumber(),
@@ -393,11 +390,31 @@ public class AeopActivity extends AppCompatActivity implements PopupMenu.OnMenuI
                 getString(R.string.pole_latitude) + " " + aeop.getLatLoc(),
                 getString(R.string.pole_longitude) + " " + aeop.getLongLoc(),
                 getString(R.string.address) + " " + aeop.getAdressName()};
-        mAppFileUtils.save(aeop.getNroNumber(), aeop.getPmNumber(), mPoleType, aeop.getAeopNumber(), list);
+        mAppFileUtils.createTextFile(aeop.getNroNumber(), aeop.getPmNumber(), mPoleType, aeop.getAeopNumber(), list);
     }
 
-    private void deleteAeopSheet(String aeopSheet) {
-        mAeopDb.deleteAeopDbUtils(aeopSheet);
+    private void deleteAeopSheet() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this, R.style.MyDialogStyle);
+        builder.create();
+        builder.setCancelable(false);
+        builder.setMessage(getString(R.string.delete_db_sheet, mNameItemPositionForPopupMenu));
+
+        builder.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int id) {
+                mAeopDb.deleteAeopDbUtils(mNameItemPositionForPopupMenu);
+                mDialogArrayAdapter.notifyDataSetChanged();
+            }
+        });
+
+        builder.setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int id) {
+                dialog.cancel();
+            }
+        });
+
+        builder.show();
     }
 
     private int getSheetCount() {
@@ -406,6 +423,62 @@ public class AeopActivity extends AppCompatActivity implements PopupMenu.OnMenuI
 
     private boolean isAnswered() {
         return (!mNroText.isEmpty() && !mPmText.isEmpty() && !mAeopText.isEmpty());
+    }
+
+    private boolean isSheetExist(String sheetName) {
+        List<AeopDbUtils> aeopDatabaseList = mAeopDb.getAllAeopDbUtils();
+        for (AeopDbUtils aeop : aeopDatabaseList) {
+            String str = aeop.getSheetName();
+            if (str.equals(sheetName)) {
+                mSheetExist = true;
+            }
+        }
+
+        return mSheetExist;
+    }
+
+    private void shouldOverwriteSheet(final String sheetName) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this, R.style.MyDialogStyle);
+        builder.create();
+        builder.setCancelable(false);
+        builder.setTitle(getString(R.string.exist_warning));
+        builder.setMessage(getString(R.string.sheet_exist_message, sheetName));
+
+        builder.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int id) {
+                mAeopDb.deleteAeopDbUtils(sheetName);
+                mAeopDb.addAeopDbUtils(new AeopDbUtils(sheetName, mNroText, mPmText,
+                        mAeopText, mBtText, mHtText, mDrcText, mAdrText, mLatText, mLongText));
+                createSheetToast();
+                finish();
+                dialog.dismiss();
+            }
+        });
+
+        builder.setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int id) {
+                dialog.cancel();
+            }
+        });
+
+        builder.show();
+    }
+
+    private void showMessage(String title, String message) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this, R.style.MyDialogStyle);
+        builder.create();
+        builder.setCancelable(false);
+        builder.setTitle(title);
+        builder.setMessage(message);
+        builder.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int id) {
+                dialog.dismiss();
+            }
+        });
+        builder.show();
     }
 
     private void createSheetToast() {
