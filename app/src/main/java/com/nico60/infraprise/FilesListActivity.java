@@ -414,7 +414,9 @@ public class FilesListActivity extends AppCompatActivity {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 String fileName = mDialogArrayAdapter.getItem(position);
-                mDirSelected = getDir(fileName);
+                if (fileName != null) {
+                    mDirSelected = getDir(fileName);
+                }
                 if (mDirSelected.isDirectory()) {
                     loadFileList(mDirSelected);
                 }
