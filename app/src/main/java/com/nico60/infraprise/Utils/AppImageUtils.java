@@ -1,5 +1,6 @@
 package com.nico60.infraprise.Utils;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
@@ -19,10 +20,9 @@ import com.nico60.infraprise.R;
 import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
 
-import static android.support.v4.content.FileProvider.getUriForFile;
+import static androidx.core.content.FileProvider.getUriForFile;
 import static com.nico60.infraprise.MainActivity.isExternalStorageWritable;
 import static java.lang.String.format;
 
@@ -50,8 +50,8 @@ public class AppImageUtils {
         final View view = inflater.inflate(R.layout.dialog_listview, null, false);
         ListView dialogListView = (ListView) view.findViewById(R.id.dialog_list_view);
         final String[] arrayView = mActivity.getResources().getStringArray(R.array.poleViewArray);
-        final ArrayAdapter<String> dialogArrayAdapter = new ArrayAdapter<>(mActivity, R.layout.list_view_items,
-                R.id.textListView, arrayView);
+        final ArrayAdapter<String> dialogArrayAdapter = new ArrayAdapter<>(mActivity, R.layout.file_list_view_items,
+                R.id.fileTextListView, arrayView);
         AlertDialog.Builder builder = new AlertDialog.Builder(mActivity);
         builder.setView(view);
         final AlertDialog dialog = builder.create();
@@ -75,8 +75,8 @@ public class AppImageUtils {
     public void dispatchTakePictureIntent() {
         if (isExternalStorageWritable()) {
             Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+            File photoFile = null;
             if (takePictureIntent.resolveActivity(mActivity.getPackageManager()) != null) {
-                File photoFile = null;
                 try {
                     photoFile = createImageFile();
                 } catch (IOException ex) {
@@ -95,7 +95,7 @@ public class AppImageUtils {
     }
 
     private File createImageFile() throws IOException {
-        String timeStamp = new SimpleDateFormat("yyyyMMdd-HHmmss").format(new Date());
+        @SuppressLint("SimpleDateFormat") String timeStamp = new SimpleDateFormat("yyyyMMdd-HHmm-ss").format(new Date());
         String imageFileName = mActivity.getString(R.string.nro) + mNroNum + "_" + mActivity.getString(R.string.pm) + mPmNum + "_" + mPoleType +
                 mFileName + mPoleView + "_" + format("%s.jpg", timeStamp);
         return new File(createDirectory(), imageFileName);

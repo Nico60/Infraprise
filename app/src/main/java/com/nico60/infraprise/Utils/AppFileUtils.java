@@ -14,10 +14,11 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.util.ArrayList;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
-import org.apache.commons.io.FileExistsException;
 import org.apache.commons.io.FileUtils;
 
 import static com.nico60.infraprise.MainActivity.isExternalStorageWritable;
@@ -26,6 +27,7 @@ import static java.lang.String.format;
 public class AppFileUtils {
 
     private Activity mActivity;
+    private ArrayList<File> mZipFileArray = new ArrayList<>();;
     private String mFileName;
     private String mNroNum;
     private String mPmNum;
@@ -55,11 +57,7 @@ public class AppFileUtils {
     public void move(File file, File path) {
         try {
             FileUtils.moveToDirectory(file, path, false);
-        } catch (NullPointerException e) {
-            e.printStackTrace();
-        } catch (FileExistsException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
+        } catch (NullPointerException | IOException e) {
             e.printStackTrace();
         }
     }
@@ -150,23 +148,36 @@ public class AppFileUtils {
         return finalDir;
     }
 
-    public File zipFolder(File zipFolder) {
-        File ZipFile = new File(zipFolder.getParent(), format("%s.zip", zipFolder.getName()));
-        try {
-            ZipOutputStream out = new ZipOutputStream(new FileOutputStream(ZipFile));
-            zipSubFolder(out, zipFolder, zipFolder.getPath().length());
-            out.close();
-            return ZipFile;
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            return null;
-        }
+    public File zipFolder(final File zipFolder) {
+        final File ZipFile = new File(zipFolder.getParent(), format("%s.zip", zipFolder.getName()));
+        new Thread() {
+            @Override
+            public void run() {
+                try {
+                    mZipFileArray.add(ZipFile);
+                    ZipOutputStream out = new ZipOutputStream(Files.newOutputStream(ZipFile.toPath()));
+                    zipSubFolder(out, zipFolder, zipFolder.getPath().length());
+                    out.close();
+                    mActivity.runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            //
+                        }
+                    });
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                }
+            }
+        }.start();
+
+        return ZipFile;
     }
 
     private void zipSubFolder(ZipOutputStream out, File folder, int basePathLength) throws IOException {
         final int BUFFER = 2048;
         File[] fileList = folder.listFiles();
         BufferedInputStream origin;
+        assert fileList != null;
         for (File file : fileList) {
             if (file.isDirectory()) {
                 zipSubFolder(out, file, basePathLength);
@@ -187,6 +198,13 @@ public class AppFileUtils {
                 out.closeEntry();
             }
         }
+    }
+
+    public void deleteZipFile() {
+        for (File zip : mZipFileArray) {
+            delete(zip);
+        }
+        mZipFileArray.clear();
     }
 
     private void saveToast(String reason) {

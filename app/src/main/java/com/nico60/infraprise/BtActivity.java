@@ -9,9 +9,9 @@ import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -37,7 +37,7 @@ import java.util.List;
 
 public class BtActivity extends AppCompatActivity implements PopupMenu.OnMenuItemClickListener {
 
-    private static final int REQUEST_TAKE_PHOTO = 1;
+    private static final int REQUEST_IMAGE_CAPTURE = 1;
 
     private AlertDialog mDialog;
     private AppFileUtils mAppFileUtils;
@@ -79,8 +79,8 @@ public class BtActivity extends AppCompatActivity implements PopupMenu.OnMenuIte
         mDialog = builder.create();
 
         mDialogArrayList = new ArrayList<>();
-        mDialogArrayAdapter = new ArrayAdapter<>(this, R.layout.list_view_items,
-                R.id.textListView, mDialogArrayList);
+        mDialogArrayAdapter = new ArrayAdapter<>(this, R.layout.db_list_view_items,
+                R.id.dbTextListView, mDialogArrayList);
 
         mAdrInput = findViewById(R.id.btAdrText);
         mBtInput = findViewById(R.id.btBtText);
@@ -90,6 +90,7 @@ public class BtActivity extends AppCompatActivity implements PopupMenu.OnMenuIte
         mPmInput = findViewById(R.id.btPmText);
 
         Toolbar btToolbar = findViewById(R.id.btToolbar);
+        btToolbar.setOverflowIcon(getDrawable(R.drawable.ic_db_sheet));
 
         mLocationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
 
@@ -476,7 +477,8 @@ public class BtActivity extends AppCompatActivity implements PopupMenu.OnMenuIte
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == REQUEST_TAKE_PHOTO && resultCode == RESULT_OK) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
             Toast.makeText(this, getString(R.string.picture_saved), Toast.LENGTH_SHORT).show();
         }
     }

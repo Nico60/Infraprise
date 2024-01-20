@@ -6,9 +6,9 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Environment;
-import android.support.v7.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.widget.Toolbar;
+import androidx.appcompat.widget.Toolbar;
 import android.util.SparseBooleanArray;
 import android.view.ActionMode;
 import android.view.LayoutInflater;
@@ -32,12 +32,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 
-import static android.support.v4.content.FileProvider.getUriForFile;
+import static androidx.core.content.FileProvider.getUriForFile;
 
 public class FilesListActivity extends AppCompatActivity {
-
-    private static final int REQUEST_FILE_VIEW = 1;
-    private static final int REQUEST_FILE_SEND = 2;
 
     private ActionMode mMode;
     private AppFileUtils mAppFileUtils;
@@ -84,9 +81,9 @@ public class FilesListActivity extends AppCompatActivity {
         mItem = new ArrayList<>();
         mZipUriList = new ArrayList<>();
 
-        mAdapter = new FileListAdaptater(this, R.layout.list_view_items, mArrayListItem);
-        mDialogArrayAdapter = new ArrayAdapter<>(this, R.layout.list_view_items,
-                R.id.textListView, mDialogArrayList);
+        mAdapter = new FileListAdaptater(this, R.layout.file_list_view_items, mArrayListItem);
+        mDialogArrayAdapter = new ArrayAdapter<>(this, R.layout.file_list_view_items,
+                R.id.fileTextListView, mDialogArrayList);
 
         mListView = findViewById(R.id.files_listview);
         mListView.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE_MODAL);
@@ -251,7 +248,7 @@ public class FilesListActivity extends AppCompatActivity {
             mExtType = mAppFileUtils.getFileExt(uri.toString());
         }
         mViewIntent.setDataAndType(uri, mExtType == null ? "text/plain" : mExtType);
-        startActivityForResult(mViewIntent, REQUEST_FILE_VIEW);
+        startActivity(Intent.createChooser(mViewIntent, "View using"));
     }
 
     private void copyFileItem() {
@@ -288,14 +285,13 @@ public class FilesListActivity extends AppCompatActivity {
                 mZipUriList.add(mZipUri);
             }
         }
-        updateList(mCurrentList);
         if (mZipUriList.size() >= 1 || mZipUri != null) {
             mSendIntent = new Intent();
             mSendIntent.setAction(Intent.ACTION_SEND_MULTIPLE);
             mExtType = mAppFileUtils.getFileExt(mZipUriList.toString());
             mSendIntent.setType(mExtType == null ? "text/plain" : mExtType);
             mSendIntent.putParcelableArrayListExtra(Intent.EXTRA_STREAM, mZipUriList);
-            startActivityForResult(mSendIntent, REQUEST_FILE_SEND);
+            startActivity(Intent.createChooser(mSendIntent, "Send using"));
         }
     }
 
@@ -523,17 +519,14 @@ public class FilesListActivity extends AppCompatActivity {
     }
 
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == REQUEST_FILE_VIEW && resultCode == RESULT_OK) {
-            startActivity(Intent.createChooser(mViewIntent, "View using"));
-        }
-        if (requestCode == REQUEST_FILE_SEND && resultCode == RESULT_OK) {
-            startActivity(Intent.createChooser(mSendIntent, "Send using"));
-        }
+    protected void onResume() {
+        mAppFileUtils.deleteZipFile();
+        super.onResume();
     }
 
     @Override
     public void onBackPressed() {
+        super.onBackPressed();
         File newDir = new File(String.valueOf(mOldDir));
         if (!newDir.equals(mRootDir.getParentFile())) {
             openDir(newDir);
